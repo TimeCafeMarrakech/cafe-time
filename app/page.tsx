@@ -43,6 +43,7 @@ export default function LuxuryVisualLoungeApp() {
     setCustomizerIsOpen(true);
   };
 
+  // ─── CORRECTED MATH LOGIC FOR ALTERNATIVE MILK SURCHARGES ───
   const confirmCustomizationAndAddToCart = () => {
     let finalPrice = customizerBasePrice;
     let details = [];
@@ -50,8 +51,8 @@ export default function LuxuryVisualLoungeApp() {
 
     if (customizerType === 'drink') {
       if (selectedMilk !== 'Standard') { 
-        finalPrice += 6; 
-        details.push(selectedMilk); 
+        finalPrice += 6; // Dynamically forces +6 MAD into the total arithmetic loop
+        details.push(selectedMilk === 'Oat Milk' ? (lang === 'EN' ? 'Oat Milk +6 MAD' : 'Lait d&apos;Avoine +6 MAD') : (lang === 'EN' ? 'Almond Milk +6 MAD' : 'Lait d&apos;Amande +6 MAD')); 
       }
     }
 
@@ -90,9 +91,9 @@ export default function LuxuryVisualLoungeApp() {
               {customizerType === 'drink' && (
                 <div className="space-y-2">
                   <label className="block text-[0.6rem] tracking-[0.12em] uppercase text-[#6B6460] font-medium">{lang === 'EN' ? 'Milk Inlay Customization' : 'Personnalisation du Lait'}</label>
-                  {['Standard', 'Oat Milk', 'Almond Milk'].map((milk) => (
-                    <button key={milk} type="button" onClick={() => setSelectedMilk(milk)} className={`w-full text-left px-3 py-2 rounded-[1px] border bg-transparent text-xs ${selectedMilk === milk ? 'border-[#B8734A] text-[#B8734A] bg-[#EDEBE3]' : 'border-[#D5CFC4]'}`}>{milk}</button>
-                  ))}
+                  <button type="button" onClick={() => setSelectedMilk('Standard')} className={`w-full text-left px-3 py-2 rounded-[1px] border bg-transparent text-xs ${selectedMilk === 'Standard' ? 'border-[#B8734A] text-[#B8734A] bg-[#EDEBE3]' : 'border-[#D5CFC4]'}`}>{lang === 'EN' ? 'Standard Dairy' : 'Lait Standard'}</button>
+                  <button type="button" onClick={() => setSelectedMilk('Oat Milk')} className={`w-full text-left px-3 py-2 rounded-[1px] border bg-transparent text-xs ${selectedMilk === 'Oat Milk' ? 'border-[#B8734A] text-[#B8734A] bg-[#EDEBE3]' : 'border-[#D5CFC4]'}`}>{lang === 'EN' ? 'Oat Milk (+6 MAD)' : 'Lait d&apos;Avoine (+6 MAD)'}</button>
+                  <button type="button" onClick={() => setSelectedMilk('Almond Milk')} className={`w-full text-left px-3 py-2 rounded-[1px] border bg-transparent text-xs ${selectedMilk === 'Almond Milk' ? 'border-[#B8734A] text-[#B8734A] bg-[#EDEBE3]' : 'border-[#D5CFC4]'}`}>{lang === 'EN' ? 'Almond Milk (+6 MAD)' : 'Lait d&apos;Amande (+6 MAD)'}</button>
                 </div>
               )}
               <div className="flex gap-3">
@@ -133,10 +134,9 @@ export default function LuxuryVisualLoungeApp() {
         {/* THREE-COLUMN SYSTEM MATRIX */}
         <div className="flex-1 max-w-7xl w-full mx-auto grid grid-cols-1 lg:grid-cols-4 gap-6 items-start overflow-hidden pb-4">
           
-          {/* 📜 RESTORED DEEP TYPOGRAPHIC CAFE MENU SIDEBAR */}
+          {/* DEEP TYPOGRAPHIC CAFE MENU SIDEBAR */}
           <aside className="lg:col-span-1 bg-[#EDEBE3] border border-[#D5CFC4] rounded-[2px] p-4 space-y-5 max-h-[52vh] lg:max-h-[82vh] overflow-y-auto style-scrollbar">
             
-            {/* Loyalty Tracker Node */}
             <div className="bg-[#1A1714] text-[#F5F0E8] p-4 rounded-[2px] border border-black space-y-2.5">
               <div className="flex justify-between items-center text-[0.6rem] uppercase tracking-widest">
                 <span className="text-[#C9A96E] font-medium">{lang === 'EN' ? 'Ritual Loop' : 'Rituel Boucle'}</span>
@@ -180,10 +180,10 @@ export default function LuxuryVisualLoungeApp() {
               <div className="space-y-2">
                 <h3 className="text-[0.58rem] tracking-[0.15em] uppercase text-[#8A9E8C] font-semibold border-b border-[#D5CFC4]/50 pb-0.5">{lang === 'EN' ? 'Espresso Foundations' : 'Bases Espresso'}</h3>
                 <div className="space-y-2 text-xs">
-                  <button onClick={() => openCustomizer('Double Espresso (Origin Blend)', 'Double Espresso Blend', 20, 'drink')} className="w-full flex justify-between bg-transparent border-none p-0 text-left hover:text-[#B8734A] cursor-pointer"><span>Double Espresso</span><span className="bg-[#FDFCF9] px-1.5 py-0.5 border border-[#D5CFC4] text-[0.65rem] rounded-[2px]">20 MAD</span></button>
+                  <button onClick={() => openCustomizer('Double Espresso', 'Double Espresso', 20, 'drink')} className="w-full flex justify-between bg-transparent border-none p-0 text-left hover:text-[#B8734A] cursor-pointer"><span>Double Espresso</span><span className="bg-[#FDFCF9] px-1.5 py-0.5 border border-[#D5CFC4] text-[0.65rem] rounded-[2px]">20 MAD</span></button>
                   <button onClick={() => openCustomizer('Cortado', 'Cortado Classique', 25, 'drink')} className="w-full flex justify-between bg-transparent border-none p-0 text-left hover:text-[#B8734A] cursor-pointer"><span>Cortado</span><span className="bg-[#FDFCF9] px-1.5 py-0.5 border border-[#D5CFC4] text-[0.65rem] rounded-[2px]">25 MAD</span></button>
                   <button onClick={() => openCustomizer('Flat White', 'Flat White Standard', 35, 'drink')} className="w-full flex justify-between bg-transparent border-none p-0 text-left hover:text-[#B8734A] cursor-pointer"><span>Flat White</span><span className="bg-[#FDFCF9] px-1.5 py-0.5 border border-[#D5CFC4] text-[0.65rem] rounded-[2px]">35 MAD</span></button>
-                  <button onClick={() => openCustomizer('Bespoke Iced Latte', 'Latte Glacé Maison', 38, 'drink')} className="w-full flex justify-between bg-transparent border-none p-0 text-left hover:text-[#B8734A] cursor-pointer"><span>Iced Latte</span><span className="bg-[#FDFCF9] px-1.5 py-0.5 border border-[#D5CFC4] text-[0.65rem] rounded-[2px]">38 MAD</span></button>
+                  <button onClick={() => openCustomizer('Iced Latte', 'Latte Glacé Maison', 38, 'drink')} className="w-full flex justify-between bg-transparent border-none p-0 text-left hover:text-[#B8734A] cursor-pointer"><span>Iced Latte</span><span className="bg-[#FDFCF9] px-1.5 py-0.5 border border-[#D5CFC4] text-[0.65rem] rounded-[2px]">38 MAD</span></button>
                 </div>
               </div>
 
@@ -252,7 +252,7 @@ export default function LuxuryVisualLoungeApp() {
                     ) : (
                       <div className="space-y-4 overflow-y-auto flex-1 text-left">
                         {messages.map((m, i) => (
-                          <div key={i} className={`flex flex-col ${m.role === 'user' ? 'items-end' : 'items-start'}`}>
+                          <div key={i} className={`flex flex-col ${m.role === 'user' ? 'items-end' : 'items-start'} animate-[fadeUp_0.2s_ease_both]`}>
                             <span className="text-[0.55rem] tracking-[0.1em] uppercase text-[#6B6460] mb-0.5">{m.role === 'user' ? (guestName || 'You') : 'Anis'}</span>
                             <div className={`max-w-[85%] text-xs p-3 rounded-[2px] ${m.role === 'user' ? 'bg-[#EDEBE3] border border-[#D5CFC4]' : 'bg-[#1A1714] text-[#F5F0E8]'}`}>{m.content}</div>
                           </div>
@@ -269,7 +269,7 @@ export default function LuxuryVisualLoungeApp() {
               )}
 
               {activeTab === 'spaces' && (
-                <div className="space-y-6 p-1">
+                <div className="space-y-6 p-1 animate-[fadeUp_0.3s_ease_both]">
                   <div>
                     <h3 className="font-['Cormorant_Garamond'] text-xl text-[#1A1714]">{lang === 'EN' ? 'Infrastructure & Workspace Bookings' : "Réservations d'Espaces & Postes de Travail"}</h3>
                     <p className="text-[0.7rem] text-[#6B6460] uppercase tracking-wider">{lang === 'EN' ? 'Select architectural resources.' : 'Sélectionnez vos ressources.'}</p>
@@ -334,7 +334,7 @@ export default function LuxuryVisualLoungeApp() {
             </div>
           </div>
 
-          {/* RIGHT SIDE ACENTS CARD */}
+          {/* RIGHT SIDE ACCENTS CARD */}
           <aside className="lg:col-span-1 bg-[#1A1714] text-[#F5F0E8] border border-[#1A1714] rounded-[2px] p-5 h-full flex flex-col justify-between">
             <div className="space-y-3">
               <span className="text-[0.55rem] tracking-[0.2em] text-[#C9A96E] uppercase block font-semibold">Active Sanctuary</span>
