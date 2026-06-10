@@ -39,6 +39,9 @@ export default function LuxuryVisualLoungeApp() {
   const [loyaltyStamps, setLoyaltyStamps] = useState<number>(5);
   const maxStamps = 9;
 
+  // Silent Service Alert Banner States
+  const [serviceNotification, setServiceNotification] = useState<string | null>(null);
+
   // Notice board inputs
   const [newPostTitle, setNewPostTitle] = useState('');
   const [newPostDesc, setNewPostDesc] = useState('');
@@ -89,6 +92,30 @@ export default function LuxuryVisualLoungeApp() {
     setActiveTab('checkout');
   };
 
+  // ─── DESK SERVICE TRIGGER SERVICE METHODS ───
+  const handlePingWater = () => {
+    const alertMsg = lang === 'EN' ? 'Concierge alerted. A glass of mineral water is en route to your station.' : 'Concierge alerté. Un verre d&apos;eau minérale est en route vers votre poste.';
+    setServiceNotification(alertMsg);
+    setTimeout(() => setServiceNotification(null), 4000);
+  };
+
+  const handleInstantReorder = () => {
+    // Looks for the last drink added to the invoice statement history array
+    const lastItem = [...cart].reverse().find(i => !i.item.includes('Desk') && !i.item.includes('Session') && !i.item.includes('Workshop') && !i.item.includes('Bag') && !i.item.includes('Cup') && !i.item.includes('Clip'));
+    
+    if (lastItem) {
+      setCart([...cart, { id: Math.random().toString(36).substring(2, 9), item: `${lastItem.item} (Re-order)`, price: lastItem.price }]);
+      const msg = lang === 'EN' ? `Duplicated: ${lastItem.item} added to your active invoice lines.` : `Dupliqué : ${lastItem.item} ajouté à vos lignes actives.`;
+      setServiceNotification(msg);
+      setTimeout(() => setServiceNotification(null), 4000);
+      setActiveTab('checkout');
+    } else {
+      const failMsg = lang === 'EN' ? 'No recent beverage detected in history ledger yet.' : 'Aucune boisson récente détectée dans l&apos;historique.';
+      setServiceNotification(failMsg);
+      setTimeout(() => setServiceNotification(null), 3000);
+    }
+  };
+
   const handleCreatePost = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newPostTitle.trim() || !newPostDesc.trim()) return;
@@ -127,6 +154,13 @@ export default function LuxuryVisualLoungeApp() {
     return (
       <main className="min-h-screen bg-[#F5F0E8] text-[#1A1714] font-['DM_Sans'] flex flex-col p-4 md:p-6 relative">
         
+        {/* Silent Floating Micro Notification Layer */}
+        {serviceNotification && (
+          <div className="fixed top-20 right-6 z-50 bg-[#1A1714] text-[#F5F0E8] text-xs px-4 py-3 border border-[#C9A96E]/40 rounded-[1px] shadow-2xl animate-pulse max-w-sm">
+            {serviceNotification}
+          </div>
+        )}
+
         {/* Customizer Modal */}
         {customizerIsOpen && (
           <div className="fixed inset-0 bg-[#1A1714]/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
@@ -148,7 +182,7 @@ export default function LuxuryVisualLoungeApp() {
           </div>
         )}
 
-        {/* Top Navigation Header Layout */}
+        {/* Header Layout */}
         <header className="max-w-7xl w-full mx-auto flex justify-between items-center border-b border-[#D5CFC4] pb-4 mb-6">
           <div>
             <h1 className="font-['Cormorant_Garamond'] text-2xl tracking-[0.2em] uppercase text-[#B8734A] font-light">T I M E</h1>
@@ -163,7 +197,7 @@ export default function LuxuryVisualLoungeApp() {
           </div>
         </header>
 
-        {/* Guest Name Banner */}
+        {/* Guest Name */}
         {!guestName && (
           <div className="max-w-md w-full mx-auto mb-6 bg-[#EDEBE3] p-6 rounded-[2px] border border-[#D5CFC4] text-center space-y-4">
             <p className="text-xs tracking-wide text-[#6B6460] uppercase font-medium">{lang === 'EN' ? "Before we summon the concierge, how shall Anis address you?" : "Avant d'appeler le concierge, comment Anis doit-il vous appelér ?"}</p>
@@ -174,10 +208,10 @@ export default function LuxuryVisualLoungeApp() {
           </div>
         )}
 
-        {/* THREE-COLUMN MASTER GRID */}
+        {/* THREE-COLUMN MASTER SYSTEM GRID */}
         <div className="flex-1 max-w-7xl w-full mx-auto grid grid-cols-1 lg:grid-cols-4 gap-6 items-start overflow-hidden pb-4">
           
-          {/* ☕ FULL RESTORED TYPOGRAPHIC CONCIERGE MENU SIDEBAR */}
+          {/* MENU SIDEBAR */}
           <aside className="lg:col-span-1 bg-[#EDEBE3] border border-[#D5CFC4] rounded-[2px] p-4 space-y-5 max-h-[52vh] lg:max-h-[82vh] overflow-y-auto style-scrollbar">
             <div className="bg-[#1A1714] text-[#F5F0E8] p-4 rounded-[2px] border border-black space-y-2.5">
               <div className="flex justify-between items-center text-[0.6rem] uppercase tracking-widest">
@@ -195,7 +229,6 @@ export default function LuxuryVisualLoungeApp() {
             </div>
 
             <div className="space-y-4">
-              {/* Category A: Single Origin Filter */}
               <div className="space-y-2">
                 <h3 className="text-[0.58rem] tracking-[0.15em] uppercase text-[#8A9E8C] font-semibold border-b border-[#D5CFC4]/50 pb-0.5">{lang === 'EN' ? 'Slow Brew & Pour Overs' : 'Extractions Douces'}</h3>
                 <div className="space-y-2 text-xs">
@@ -204,40 +237,26 @@ export default function LuxuryVisualLoungeApp() {
                 </div>
               </div>
 
-              {/* Category B: Espresso Frameworks */}
               <div className="space-y-2">
                 <h3 className="text-[0.58rem] tracking-[0.15em] uppercase text-[#8A9E8C] font-semibold border-b border-[#D5CFC4]/50 pb-0.5">{lang === 'EN' ? 'Espresso Foundations' : 'Bases Espresso'}</h3>
                 <div className="space-y-2 text-xs">
                   <button onClick={() => openCustomizer('Double Espresso', 'Double Espresso', 20, 'drink')} className="w-full flex justify-between bg-transparent border-none p-0 text-left hover:text-[#B8734A] cursor-pointer"><span>Double Espresso</span><span className="bg-[#FDFCF9] px-1.5 py-0.5 border border-[#D5CFC4] text-[0.65rem] rounded-[2px]">20 MAD</span></button>
                   <button onClick={() => openCustomizer('Cortado', 'Cortado Classique', 25, 'drink')} className="w-full flex justify-between bg-transparent border-none p-0 text-left hover:text-[#B8734A] cursor-pointer"><span>Cortado</span><span className="bg-[#FDFCF9] px-1.5 py-0.5 border border-[#D5CFC4] text-[0.65rem] rounded-[2px]">25 MAD</span></button>
                   <button onClick={() => openCustomizer('Flat White', 'Flat White Standard', 35, 'drink')} className="w-full flex justify-between bg-transparent border-none p-0 text-left hover:text-[#B8734A] cursor-pointer"><span>Flat White</span><span className="bg-[#FDFCF9] px-1.5 py-0.5 border border-[#D5CFC4] text-[0.65rem] rounded-[2px]">35 MAD</span></button>
-                  <button onClick={() => openCustomizer('Iced Latte', 'Latte Glacé Maison', 38, 'drink')} className="w-full flex justify-between bg-transparent border-none p-0 text-left hover:text-[#B8734A] cursor-pointer"><span>Iced Latte</span><span className="bg-[#FDFCF9] px-1.5 py-0.5 border border-[#D5CFC4] text-[0.65rem] rounded-[2px]">38 MAD</span></button>
                 </div>
               </div>
 
-              {/* Category C: Marrakech Craft Signatures */}
-              <div className="space-y-2">
-                <h3 className="text-[0.58rem] tracking-[0.15em] uppercase text-[#8A9E8C] font-semibold border-b border-[#D5CFC4]/50 pb-0.5">{lang === 'EN' ? 'Marrakech Craft Signatures' : 'Signatures Artisanales'}</h3>
-                <div className="space-y-2 text-xs">
-                  <button onClick={() => openCustomizer('Rose & Cardamom Latte', 'Latte à la Rose et Cardamome', 45, 'drink')} className="w-full flex justify-between bg-transparent border-none p-0 text-left hover:text-[#B8734A] cursor-pointer"><div className="flex flex-col"><span>Rose & Cardamom Latte</span><span className="text-[0.6rem] text-[#6B6460] italic font-light">Organic rosewater infusion</span></div><span className="bg-[#FDFCF9] h-fit px-1.5 py-0.5 border border-[#D5CFC4] text-[0.65rem] rounded-[2px]">45 MAD</span></button>
-                  <button onClick={() => openCustomizer('Orange Blossom Shakerato', 'Shakerato Fleur d’Oranger', 40, 'drink')} className="w-full flex justify-between bg-transparent border-none p-0 text-left hover:text-[#B8734A] cursor-pointer"><div className="flex flex-col"><span>Orange Blossom Shakerato</span><span className="text-[0.6rem] text-[#6B6460] italic font-light">Chilled espresso, blossom mist</span></div><span className="bg-[#FDFCF9] h-fit px-1.5 py-0.5 border border-[#D5CFC4] text-[0.65rem] rounded-[2px]">40 MAD</span></button>
-                  <button onClick={() => openCustomizer('Medina Mint Cold Brew', 'Cold Brew à la Menthe Fraîche', 42, 'drink')} className="w-full flex justify-between bg-transparent border-none p-0 text-left hover:text-[#B8734A] cursor-pointer"><div className="flex flex-col"><span>Medina Mint Cold Brew</span><span className="text-[0.6rem] text-[#6B6460] italic font-light">Slow-drip over wild local mint</span></div><span className="bg-[#FDFCF9] h-fit px-1.5 py-0.5 border border-[#D5CFC4] text-[0.65rem] rounded-[2px]">42 MAD</span></button>
-                </div>
-              </div>
-
-              {/* Category D: Artisanal Bakery */}
               <div className="space-y-2">
                 <h3 className="text-[0.58rem] tracking-[0.15em] uppercase text-[#8A9E8C] font-semibold border-b border-[#D5CFC4]/50 pb-0.5">{lang === 'EN' ? 'Artisanal Bakery' : 'Boulangerie Artisanale'}</h3>
                 <div className="space-y-2 text-xs">
                   <button onClick={() => openCustomizer('Pistachio Stuffed Croissant', 'Croissant Fourré à la Pistache', 45, 'pastry')} className="w-full flex justify-between bg-transparent border-none p-0 text-left hover:text-[#B8734A] cursor-pointer"><span>Pistachio Croissant</span><span className="bg-[#FDFCF9] px-1.5 py-0.5 border border-[#D5CFC4] text-[0.65rem] rounded-[2px]">45 MAD</span></button>
                   <button onClick={() => openCustomizer('Atlas Honey Almond Croissant', 'Croissant Amande au Miel de l’Atlas', 42, 'pastry')} className="w-full flex justify-between bg-transparent border-none p-0 text-left hover:text-[#B8734A] cursor-pointer"><span>Atlas Honey Almond Croissant</span><span className="bg-[#FDFCF9] px-1.5 py-0.5 border border-[#D5CFC4] text-[0.65rem] rounded-[2px]">42 MAD</span></button>
-                  <button onClick={() => openCustomizer('San Sebastián Honey Cake', 'Gâteau de Miel San Sebastián', 50, 'pastry')} className="w-full flex justify-between bg-transparent border-none p-0 text-left hover:text-[#B8734A] cursor-pointer"><span>San Sebastián Honey Cake</span><span className="bg-[#FDFCF9] px-1.5 py-0.5 border border-[#D5CFC4] text-[0.65rem] rounded-[2px]">50 MAD</span></button>
                 </div>
               </div>
             </div>
           </aside>
 
-          {/* MAIN MODULE HOUSING DASHBOARD */}
+          {/* MAIN PANELS HOUSING AREA */}
           <div className="lg:col-span-2 flex flex-col bg-[#FDFCF9] border border-[#D5CFC4] rounded-[2px] p-5 h-[72vh] lg:h-[82vh] justify-between">
             <div className="flex border-b border-[#D5CFC4] pb-2 mb-4 gap-6 text-xs uppercase tracking-widest font-medium overflow-x-auto whitespace-nowrap style-scrollbar">
               <button onClick={() => setActiveTab('spaces')} className={`pb-1 bg-transparent border-none cursor-pointer ${activeTab === 'spaces' ? 'border-b-2 border-[#B8734A] text-[#1A1714]' : 'text-[#B0A99E]'}`}>{lang === 'EN' ? 'Experiences & Spaces' : 'Expériences & Espaces'}</button>
@@ -249,21 +268,19 @@ export default function LuxuryVisualLoungeApp() {
 
             <div className="flex-1 overflow-y-auto pr-1 style-scrollbar text-left">
               
-              {/* 🧱 RESTORED & EXPANDED ARCHITECTURAL EXPERIENCES TAB */}
+              {/* TAB 1: EXPERIENCES */}
               {activeTab === 'spaces' && (
                 <div className="space-y-6">
                   <div>
                     <h3 className="font-['Cormorant_Garamond'] text-xl text-[#1A1714] font-medium">{lang === 'EN' ? 'Courtyard Experiences & Infrastructure' : 'Expériences Courtyard & Infrastructures'}</h3>
                     <p className="text-[0.7rem] text-[#6B6460] uppercase tracking-wider">{lang === 'EN' ? 'Curated architectural setups and educational rituals for residents & families.' : 'Installations architecturales et rituels d&apos;apprentissage pour résidents et familles.'}</p>
                   </div>
-
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {/* RESTORED: Vinyl Records Session */}
                     <div className="border border-[#D5CFC4] p-4 bg-[#EDEBE3]/20 rounded-[1px] flex flex-col justify-between space-y-4">
                       <div>
                         <span className="text-[0.55rem] tracking-widest bg-[#C9A96E] text-[#1A1714] font-bold px-2 py-0.5 rounded-[1px] uppercase">Airbnb Ritual</span>
                         <h4 className="text-sm font-medium mt-2">{lang === 'EN' ? 'Courtyard Vinyl Records Session' : 'Session Vinyles dans le Patio'}</h4>
-                        <p className="text-[0.68rem] text-[#6B6460] font-light mt-1">Listen to premium local Gnawa, analog jazz, and micro-batch coffees roasted in house. Immersive 1-hour cultural enclave sound block.</p>
+                        <p className="text-[0.68rem] text-[#6B6460] font-light mt-1">Listen to premium local Gnawa, analog jazz, and micro-batch coffees roasted in house.</p>
                       </div>
                       <div className="flex justify-between items-center pt-2 border-t border-[#D5CFC4]/40">
                         <span className="text-xs font-semibold">120 MAD</span>
@@ -271,7 +288,6 @@ export default function LuxuryVisualLoungeApp() {
                       </div>
                     </div>
 
-                    {/* RESTORED: Dedicated Hot Desk Block */}
                     <div className="border border-[#D5CFC4] p-4 bg-[#EDEBE3]/20 rounded-[1px] flex flex-col justify-between space-y-4">
                       <div>
                         <span className="text-[0.55rem] tracking-widest bg-[#8A9E8C] text-[#F5F0E8] font-semibold px-2 py-0.5 rounded-[1px] uppercase">Workspace</span>
@@ -284,16 +300,15 @@ export default function LuxuryVisualLoungeApp() {
                       </div>
                     </div>
 
-                    {/* 🤖 NEW FIXED PROBLEM: STEM Education by LEGO for Teenagers */}
                     <div className="border border-[#D5CFC4] p-4 bg-[#EDEBE3]/20 rounded-[1px] flex flex-col justify-between space-y-4 md:col-span-2">
                       <div>
                         <span className="text-[0.55rem] tracking-widest bg-[#B8734A] text-[#F5F0E8] font-bold px-2 py-0.5 rounded-[1px] uppercase">Youth Academy</span>
                         <h4 className="text-sm font-medium mt-2">{lang === 'EN' ? 'STEM Education by LEGO Workshop' : 'Atelier Éducation STEM par LEGO'}</h4>
-                        <p className="text-[0.68rem] text-[#6B6460] font-light mt-1">An architectural design and creative engineering class custom-built for teenagers. Explores robotic structures, mechanical logic gates, and modular layouts using advanced LEGO Education kits. Complimentary artisan snack block included.</p>
+                        <p className="text-[0.68rem] text-[#6B6460] font-light mt-1">An architectural design and creative engineering class custom-built for teenagers. Explores robotic structures using LEGO Education kits.</p>
                       </div>
                       <div className="flex justify-between items-center pt-2 border-t border-[#D5CFC4]/40">
-                        <span className="text-xs font-semibold">250 MAD <span className="text-[0.65rem] text-[#6B6460] font-light">/ Session</span></span>
-                        <button onClick={() => openCustomizer('STEM Education by LEGO for Teenagers', 'Atelier Éducation STEM LEGO Ado', 250, 'experience')} className="text-[0.6rem] uppercase tracking-widest bg-[#1A1714] text-[#F5F0E8] px-4 py-1.5 rounded-[1px] font-medium hover:bg-[#B8734A] transition-colors">Book Academy Slot</button>
+                        <span className="text-xs font-semibold">250 MAD</span>
+                        <button onClick={() => openCustomizer('STEM Education by LEGO for Teenagers', 'Atelier Éducation STEM LEGO Ado', 250, 'experience')} className="text-[0.6rem] uppercase tracking-widest bg-[#1A1714] text-[#F5F0E8] px-4 py-1.5 rounded-[1px] font-medium">Book Academy Slot</button>
                       </div>
                     </div>
                   </div>
@@ -417,14 +432,25 @@ export default function LuxuryVisualLoungeApp() {
             </div>
           </div>
 
-          {/* RIGHT SIDE STATUS CARD */}
-          <aside className="lg:col-span-1 bg-[#1A1714] text-[#F5F0E8] border border-[#1A1714] rounded-[2px] p-5 h-full flex flex-col justify-between">
+          {/* 🛎️ RIGHT SIDE STATUS CARD + INTEGRATED CONCIERGE DESK SERVICE */}
+          <aside className="lg:col-span-1 bg-[#1A1714] text-[#F5F0E8] border border-[#1A1714] rounded-[2px] p-5 h-full flex flex-col justify-between space-y-6">
             <div className="space-y-3">
               <span className="text-[0.55rem] tracking-[0.2em] text-[#C9A96E] uppercase block font-semibold">Active Sanctuary</span>
               <p className="font-['Cormorant_Garamond'] italic text-lg leading-snug text-[#F5F0E8]/90">"Time is not something to be managed, but a territory to be inhabited thoughtfully."</p>
               <div className="w-6 h-[1px] bg-[#C9A96E] mt-2" />
             </div>
-            <div className="text-[0.65rem] space-y-1.5 text-[#F5F0E8]/50 uppercase tracking-wider pt-8">
+
+            {/* NEW CONCIERGE PING MODULE FOR BUSY COWORKERS */}
+            <div className="border border-[#F5F0E8]/10 p-3.5 bg-[#EDEBE3]/5 space-y-3 rounded-[1px]">
+              <span className="text-[0.55rem] tracking-[0.15em] text-[#8A9E8C] uppercase font-bold block">{lang === 'EN' ? 'Desk Service Concierge' : 'Service de Table Concierge'}</span>
+              <p className="text-[0.62rem] text-[#F5F0E8]/60 font-light leading-normal">{lang === 'EN' ? 'Deep in focus? Signal staff without leaving your station desk.' : 'En plein travail ? Appelez l&apos;équipe sans quitter votre poste.'}</p>
+              <div className="grid grid-cols-1 gap-2 pt-1 text-[0.6rem] uppercase tracking-wider font-medium">
+                <button onClick={handlePingWater} type="button" className="w-full text-center py-2 bg-transparent border border-[#F5F0E8]/20 text-[#F5F0E8] hover:border-[#C9A96E] hover:text-[#C9A96E] cursor-pointer transition-colors rounded-[1px]">{lang === 'EN' ? '💧 Request Glass of Water' : '💧 Demander un Verre d&apos;Eau'}</button>
+                <button onClick={handleInstantReorder} type="button" className="w-full text-center py-2 bg-[#C9A96E] text-[#1A1714] border-none hover:bg-[#b5955c] cursor-pointer transition-colors rounded-[1px] font-semibold">{lang === 'EN' ? '⚡ Instant Drink Re-Order' : '⚡ Re-commander la Boisson'}</button>
+              </div>
+            </div>
+
+            <div className="text-[0.65rem] space-y-1.5 text-[#F5F0E8]/50 uppercase tracking-wider pt-4 border-t border-[#F5F0E8]/10">
               <p>{lang === 'EN' ? '● MESH CONNECTION: 1 GBPS FIBER' : "● CONNEXION : FIBRE 1 GBPS"}</p>
               <p>{lang === 'EN' ? '● CUSTOM MILK SURCHARGES: LIVE' : "● SUPPLÉMENT LAIT VÉGÉTAL : LIVE"}</p>
               <p>{lang === 'EN' ? '● SPACE RESERVATION SLOTS: ACTIVE' : "● CRÉNEAUX DE RÉSERVATION : ACTIFS"}</p>
