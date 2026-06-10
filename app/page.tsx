@@ -6,6 +6,7 @@ interface CartItem {
   id: string;
   item: string;
   price: number;
+  customization?: string;
 }
 
 interface PingItem {
@@ -26,7 +27,14 @@ interface BulletinItem {
   contactHandle: string;
 }
 
-export default function FullyLoadedIntegratedApp() {
+interface CustomizerState {
+  isOpen: boolean;
+  itemName: string;
+  basePrice: number;
+  hasMilkOptions: boolean;
+}
+
+export default function UltimateUnifiedLoungeApp() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   
@@ -40,37 +48,61 @@ export default function FullyLoadedIntegratedApp() {
   const [guestName, setGuestName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  // ─── FEATURE 1: APLE PAY & INVOICE STATE LOGIC ───
-  const [cart, setCart] = useState<CartItem[]>([
-    { id: 'init-1', item: 'Quiet Focus Desk Access (Premium High-Speed Line)', price: 150 }
-  ]);
-  const [paymentStatus, setPaymentStatus] = useState<'idle' | 'processing' | 'success'>('idle');
+  // ─── FEATURE STATES ───
+  const [cart, setCart] = useState<CartItem[]>([]);
+  const [paymentStatus, setPaymentStatus] = useState<'idle' | 'processing_apple' | 'processing_cash' | 'success_apple' | 'success_cash'>('idle');
+  const [selectedMilk, setSelectedMilk] = useState<string>('Standard Dairy');
   
-  // ─── FEATURE 2: CLIENT NETWORK PINGS + CONNECT DIRECTORY ───
+  // ─── RESTORED LOYALTY SCHEME STATE ENGINE ───
+  const [loyaltyStamps, setLoyaltyStamps] = useState<number>(4); // Defaults to 4 stamps for onboarding representation
+  const maxStamps = 9;
+
+  // ─── DRINK CUSTOMIZER MODAL STATE ───
+  const [customizer, setCustomizer] = useState<CustomizerState>({
+    isOpen: false,
+    itemName: '',
+    basePrice: 0,
+    hasMilkOptions: false
+  });
+
+  // ─── NETWORK & BULLETIN STORAGE DATA ───
   const [pings, setPings] = useState<PingItem[]>([
     { id: 1, user: 'Youssef El Alami', action: 'Available for UI/UX consulting', time: 'Just now', skills: ['Figma', 'Tailwind', 'Branding'], contact: '@youssef_design' },
     { id: 2, user: 'Sarah Jenkins', action: 'Building a Fintech startup from Marrakech', time: '5m ago', skills: ['Next.js', 'Supabase', 'VC Funding'], contact: 'sarah@finmedina.io' },
-    { id: 3, user: 'Anas Benjelloun', action: 'Sipping a Cortado & reviewing local legal tech', time: '12m ago', skills: ['Moroccan Tax Law', 'Contracts'], contact: '@anas_legal' }
   ]);
 
-  // ─── FEATURE 3: CLIENT ADVERTISEMENT & NETWORKING BULLETIN ───
   const [bulletins, setBulletins] = useState<BulletinItem[]>([
     { id: 1, tag: 'Co-Working Request', title: 'Looking for a Full-Stack React Dev', desc: 'Need local collaboration for an e-commerce platform shipping artisanal rugs globally.', postedBy: 'Amine R.', contactHandle: 'amine@medinarugs.ma' },
-    { id: 2, tag: 'Freelancer Notice', title: 'Architectural Photographer Available', desc: 'Offering professional interior shots for local workspaces, riads, and cafes this week.', postedBy: 'Chloe M.', contactHandle: '@chloe_marrakesh' }
   ]);
 
-  // New announcement inputs
   const [newAdTitle, setNewAdTitle] = useState('');
   const [newAdDesc, setNewAdDesc] = useState('');
   const [newAdTag, setNewAdTag] = useState('Networking');
 
-  const addToCart = (itemName: string, itemPrice: number) => {
+  const openCustomizer = (name: string, price: number, isDrink: boolean) => {
+    setSelectedMilk('Standard Dairy');
+    setCustomizer({ isOpen: true, itemName: name, basePrice: price, hasMilkOptions: isDrink });
+  };
+
+  const confirmCustomizationAndAddToCart = () => {
+    let finalPrice = customizer.basePrice;
+    let details = '';
+
+    if (customizer.hasMilkOptions && selectedMilk !== 'Standard Dairy') {
+      finalPrice += 5; 
+      details = `(${selectedMilk})`;
+    } else if (customizer.hasMilkOptions) {
+      details = `(Standard Milk)`;
+    }
+
     const newItem: CartItem = {
       id: Math.random().toString(36).substring(2, 9),
-      item: itemName,
-      price: itemPrice
+      item: `${customizer.itemName} ${details}`.trim(),
+      price: finalPrice
     };
+
     setCart([...cart, newItem]);
+    setCustomizer({ isOpen: false, itemName: '', basePrice: 0, hasMilkOptions: false });
     setActiveTab('checkout');
   };
 
@@ -80,35 +112,48 @@ export default function FullyLoadedIntegratedApp() {
 
   const calculateTotal = () => cart.reduce((acc, curr) => acc + curr.price, 0);
 
-  // Simulated Apple Pay Flow Trigger
+  // Helper logic to credit a loyalty stamp when orders complete processing
+  const awardLoyaltyStamp = () => {
+    setLoyaltyStamps((prev) => {
+      if (prev >= maxStamps) return 0; // Reset loop if they just claimed a free one
+      return prev + 1;
+    });
+  };
+
   const processApplePay = () => {
-    setPaymentStatus('processing');
+    setPaymentStatus('processing_apple');
     setTimeout(() => {
-      setPaymentStatus('success');
-      setTimeout(() => {
-        setCart([]);
-        setPaymentStatus('idle');
-      }, 2500);
+      setPaymentStatus('success_apple');
+      awardLoyaltyStamp(); // Earns a stamp on purchase completion
+      setTimeout(() => { setCart([]); setPaymentStatus('idle'); }, 2500);
     }, 2000);
   };
 
-  // Submit a client networking request to the bulletin board
+  const processCashPayment = () => {
+    setPaymentStatus('processing_cash');
+    setTimeout(() => {
+      setPaymentStatus('success_cash');
+      awardLoyaltyStamp(); // Earns a stamp on purchase completion
+      setTimeout(() => { setCart([]); setPaymentStatus('idle'); }, 3000);
+    }, 1500);
+  };
+
+  const claimFreeReward = () => {
+    if (loyaltyStamps >= maxStamps) {
+      setLoyaltyStamps(0);
+      alert("✨ Ritual Reward Claimed! Show this screen to your barista for a complimentary Specialty Brew or Pastry. 🥐");
+    }
+  };
+
   const postNewAd = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newAdTitle.trim() || !newAdDesc.trim()) return;
-
     const newBulletin: BulletinItem = {
-      id: Date.now(),
-      tag: newAdTag,
-      title: newAdTitle,
-      desc: newAdDesc,
-      postedBy: guestName || 'Anonymous Member',
-      contactHandle: email || '@medina_member'
+      id: Date.now(), tag: newAdTag, title: newAdTitle, desc: newAdDesc,
+      postedBy: guestName || 'Anonymous Member', contactHandle: email || '@medina_member'
     };
-
     setBulletins([newBulletin, ...bulletins]);
-    setNewAdTitle('');
-    setNewAdDesc('');
+    setNewAdTitle(''); setNewAdDesc('');
   };
 
   const handleSignIn = (e: React.FormEvent) => {
@@ -145,20 +190,47 @@ export default function FullyLoadedIntegratedApp() {
     return (
       <>
         <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
-        <main className="min-h-screen bg-[#F5F0E8] text-[#1A1714] font-['DM_Sans'] flex flex-col p-4 md:p-6">
+        <main className="min-h-screen bg-[#F5F0E8] text-[#1A1714] font-['DM_Sans'] flex flex-col p-4 md:p-6 relative">
           
+          {/* Milk Customizer Modal */}
+          {customizer.isOpen && (
+            <div className="fixed inset-0 bg-[#1A1714]/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn">
+              <div className="bg-[#F5F0E8] border border-[#D5CFC4] max-w-sm w-full p-6 rounded-[2px] space-y-6 shadow-xl text-left">
+                <div>
+                  <span className="text-[0.6rem] tracking-[0.2em] text-[#B8734A] uppercase block font-semibold">Configure Selection</span>
+                  <h3 className="font-['Cormorant_Garamond'] text-2xl text-[#1A1714] mt-0.5">{customizer.itemName}</h3>
+                  <p className="text-xs text-[#6B6460] mt-1">Base Price: {customizer.basePrice} MAD</p>
+                </div>
+
+                {customizer.hasMilkOptions && (
+                  <div className="space-y-3">
+                    <label className="block text-[0.65rem] tracking-[0.12em] uppercase text-[#6B6460] font-medium">Milk Inlay Customization</label>
+                    <div className="grid grid-cols-1 gap-2 text-xs">
+                      {['Standard Dairy', 'Oat Milk (+5 MAD)', 'Almond Milk (+5 MAD)', 'Coconut Milk (+5 MAD)'].map((milk) => (
+                        <button
+                          key={milk} type="button" onClick={() => setSelectedMilk(milk.split(' (')[0])}
+                          className={`w-full text-left px-3 py-2.5 rounded-[1px] border transition-colors bg-transparent ${selectedMilk === milk.split(' (')[0] ? 'border-[#B8734A] text-[#B8734A] font-medium bg-[#EDEBE3]' : 'border-[#D5CFC4] text-[#6B6460] hover:border-[#1A1714]'}`}
+                        >{milk}</button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <div className="flex gap-3 pt-2">
+                  <button onClick={() => setCustomizer({ isOpen: false, itemName: '', basePrice: 0, hasMilkOptions: false })} className="flex-1 py-2.5 border border-[#D5CFC4] text-xs uppercase tracking-widest text-[#6B6460] bg-transparent hover:text-[#1A1714]">Cancel</button>
+                  <button onClick={confirmCustomizationAndAddToCart} className="flex-1 py-2.5 bg-[#1A1714] text-[#F5F0E8] text-xs uppercase tracking-widest rounded-[2px] hover:bg-[#B8734A] transition-colors border-none">Add to Order</button>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Header Layout */}
           <header className="max-w-7xl w-full mx-auto flex justify-between items-center border-b border-[#D5CFC4] pb-4 mb-6">
             <div>
               <h1 className="font-['Cormorant_Garamond'] text-2xl tracking-[0.2em] uppercase text-[#B8734A] font-light">T I M E</h1>
-              <p className="text-[0.65rem] tracking-[0.1em] uppercase text-[#6B6460]">Marrakech · Workspace Hub & Client Router</p>
+              <p className="text-[0.65rem] tracking-[0.1em] uppercase text-[#6B6460]">Marrakech · Workspace Hub & Lounge</p>
             </div>
-            <button 
-              onClick={() => setShowChat(false)}
-              className="text-[0.65rem] tracking-[0.15em] uppercase border border-[#D5CFC4] px-3 py-1.5 rounded-[2px] hover:border-[#1A1714] transition-colors bg-transparent"
-            >
-              ← Exit Lounge
-            </button>
+            <button onClick={() => setShowChat(false)} className="text-[0.65rem] tracking-[0.15em] uppercase border border-[#D5CFC4] px-3 py-1.5 rounded-[2px] hover:border-[#1A1714] transition-colors bg-transparent">← Exit Lounge</button>
           </header>
 
           {/* Guest Name Initialization Banner */}
@@ -166,100 +238,100 @@ export default function FullyLoadedIntegratedApp() {
             <div className="max-w-md w-full mx-auto mb-6 bg-[#EDEBE3] p-6 rounded-[2px] border border-[#D5CFC4] text-center space-y-4 animate-[fadeUp_0.4s_ease_both]">
               <p className="text-xs tracking-wide text-[#6B6460] uppercase font-medium">Before we summon the concierge, how shall Anis address you?</p>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full">
-                <input 
-                  type="text" id="nameInput" placeholder="Enter your name..." 
-                  className="w-full sm:w-64 px-4 py-2 border border-[#D5CFC4] rounded-[2px] bg-[#FDFCF9] text-sm text-center outline-none focus:border-[#B8734A]"
-                  onKeyDown={(e) => { if (e.key === 'Enter') { const val = (e.target as HTMLInputElement).value; if (val.trim()) setGuestName(val.trim()); } }}
-                />
-                <button
-                  type="button"
-                  onClick={() => { const inputEl = document.getElementById('nameInput') as HTMLInputElement; if (inputEl && inputEl.value.trim()) setGuestName(inputEl.value.trim()); }}
-                  className="w-full sm:w-auto px-5 py-2 bg-[#1A1714] text-[#F5F0E8] text-xs tracking-widest uppercase rounded-[2px] hover:bg-[#2E2A26] transition-colors"
-                >Confirm</button>
+                <input type="text" id="nameInput" placeholder="Enter your name..." className="w-full sm:w-64 px-4 py-2 border border-[#D5CFC4] rounded-[2px] bg-[#FDFCF9] text-sm text-center outline-none focus:border-[#B8734A]" onKeyDown={(e) => { if (e.key === 'Enter') { const val = (e.target as HTMLInputElement).value; if (val.trim()) setGuestName(val.trim()); } }} />
+                <button type="button" onClick={() => { const inputEl = document.getElementById('nameInput') as HTMLInputElement; if (inputEl && inputEl.value.trim()) setGuestName(inputEl.value.trim()); }} className="w-full sm:w-auto px-5 py-2 bg-[#1A1714] text-[#F5F0E8] text-xs tracking-widest uppercase rounded-[2px] hover:bg-[#2E2A26] transition-colors">Confirm</button>
               </div>
             </div>
           )}
 
-          {/* MASTER GRID MATRIX SYSTEM */}
+          {/* MASTER THREE-COLUMN LAYOUT */}
           <div className="flex-1 max-w-7xl w-full mx-auto grid grid-cols-1 lg:grid-cols-4 gap-6 items-start overflow-hidden pb-4">
             
-            {/* COLUMN 1: LIVE ORDERS CATALOG DIRECTORY */}
-            <aside className="lg:col-span-1 bg-[#EDEBE3] border border-[#D5CFC4] rounded-[2px] p-5 space-y-6 max-h-[40vh] lg:max-h-[75vh] overflow-y-auto">
-              <div>
-                <h2 className="font-['Cormorant_Garamond'] text-base tracking-wider text-[#B8734A] uppercase mb-1">Interactive Services</h2>
-                <p className="text-[0.6rem] text-[#6B6460] uppercase">Click a resource to push it straight onto your active checkout log.</p>
-                <div className="w-6 h-[1px] bg-[#B8734A] mt-1" />
-              </div>
-
-              <div className="space-y-4 text-xs">
-                <div>
-                  <h3 className="text-[0.6rem] tracking-[0.15em] uppercase text-[#8A9E8C] font-semibold mb-2">Workspace Units</h3>
-                  <div className="space-y-1.5">
-                    <button onClick={() => addToCart('Quiet Focus Desk (4 Hours Slot)', 150)} className="w-full flex justify-between items-center text-left hover:text-[#B8734A] transition-colors group bg-transparent border-none p-0">
-                      <span className="group-hover:underline">Quiet Focus Desk</span><span className="font-medium bg-[#FDFCF9] px-1.5 py-0.5 rounded-[2px] border border-[#D5CFC4]">150 MAD +</span>
-                    </button>
-                    <button onClick={() => addToCart('Private Meeting Suite (2 Hours Slot)', 400)} className="w-full flex justify-between items-center text-left hover:text-[#B8734A] transition-colors group bg-transparent border-none p-0">
-                      <span className="group-hover:underline">Private Meeting Room</span><span className="font-medium bg-[#FDFCF9] px-1.5 py-0.5 rounded-[2px] border border-[#D5CFC4]">400 MAD +</span>
-                    </button>
+            {/* COLUMN 1: SIDEBAR INTERACTIVE ORDER CATALOG & LOYALTY CARD */}
+            <aside className="lg:col-span-1 bg-[#EDEBE3] border border-[#D5CFC4] rounded-[2px] p-5 space-y-6 max-h-[45vh] lg:max-h-[75vh] overflow-y-auto">
+              
+              {/* 🎖 RESTORED: THE RITUAL LOYALTY STAR SCHEME CARD */}
+              <div className="bg-[#1A1714] text-[#F5F0E8] p-4 rounded-[2px] border border-black space-y-3.5 shadow-md">
+                <div className="flex justify-between items-center">
+                  <div>
+                    <span className="text-[0.5rem] tracking-[0.15em] text-[#C9A96E] uppercase block font-semibold">Ritual Circle</span>
+                    <h3 className="font-['Cormorant_Garamond'] text-sm tracking-wide text-[#F5F0E8] uppercase font-medium">Coffee Rewards Card</h3>
                   </div>
+                  <span className="text-[0.65rem] bg-[#EDEBE3] text-[#1A1714] px-1.5 py-0.5 rounded-[2px] font-mono font-medium">
+                    {loyaltyStamps}/{maxStamps}
+                  </span>
                 </div>
 
-                <div>
-                  <h3 className="text-[0.6rem] tracking-[0.15em] uppercase text-[#8A9E8C] font-semibold mb-2">Bespoke Brew Bar</h3>
-                  <div className="space-y-1.5">
-                    <button onClick={() => addToCart('Signature Rose & Cardamom Latte', 45)} className="w-full flex justify-between items-center text-left hover:text-[#B8734A] transition-colors group bg-transparent border-none p-0">
-                      <span className="group-hover:underline">Rose & Cardamom Latte</span><span className="font-medium bg-[#FDFCF9] px-1.5 py-0.5 rounded-[2px] border border-[#D5CFC4]">45 MAD +</span>
-                    </button>
-                    <button onClick={() => addToCart('Artisanal Pistachio Stuffed Croissant', 45)} className="w-full flex justify-between items-center text-left hover:text-[#B8734A] transition-colors group bg-transparent border-none p-0">
-                      <span className="group-hover:underline">Pistachio Croissant</span><span className="font-medium bg-[#FDFCF9] px-1.5 py-0.5 rounded-[2px] border border-[#D5CFC4]">45 MAD +</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              {/* ACTIVE INTERACTIVE COMPONENT: SIDEBAR QUICK PINGS LINK */}
-              <div className="pt-4 border-t border-[#D5CFC4]">
-                <h3 className="text-[0.6rem] tracking-[0.15em] uppercase text-[#B8734A] font-semibold mb-3 flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#8A9E8C] animate-ping" /> Workspace Active Pulse
-                </h3>
-                <div className="space-y-2">
-                  {pings.slice(0, 2).map((p) => (
-                    <div key={p.id} className="text-[0.7rem] bg-[#FDFCF9]/80 p-2 rounded-[1px] border border-[#D5CFC4]/40">
-                      <div className="flex justify-between font-medium text-[#1A1714]"><span>{p.user}</span><span className="text-[0.6rem] text-[#B0A99E]">{p.time}</span></div>
-                      <p className="text-[#6B6460] font-light text-[0.65rem] mt-0.5">{p.action}</p>
+                {/* Grid of Loyalty Stamp Circles */}
+                <div className="grid grid-cols-5 gap-2 pt-1.5">
+                  {Array.from({ length: maxStamps }).map((_, idx) => (
+                    <div 
+                      key={idx} 
+                      className={`aspect-square rounded-full flex items-center justify-center border text-[0.6rem] font-serif transition-all duration-300 ${idx < loyaltyStamps ? 'bg-[#C9A96E] border-[#C9A96E] text-[#1A1714] font-bold shadow-inner scale-105' : 'bg-transparent border-[#F5F0E8]/30 text-[#F5F0E8]/30'}`}
+                    >
+                      {idx < loyaltyStamps ? '☕' : idx + 1}
                     </div>
                   ))}
-                  <button onClick={() => setActiveTab('network')} className="w-full text-center text-[0.6rem] uppercase tracking-widest text-[#B8734A] hover:underline pt-1 bg-transparent border-none cursor-pointer">
-                    View Network Directory ({pings.length}) →
+                  {/* Final 10th Spot Free Claim Node */}
+                  <button 
+                    type="button"
+                    onClick={claimFreeReward}
+                    disabled={loyaltyStamps < maxStamps}
+                    className={`aspect-square rounded-full flex items-center justify-center border text-[0.55rem] font-medium transition-all p-0 ${loyaltyStamps >= maxStamps ? 'bg-[#8A9E8C] border-[#8A9E8C] text-[#F5F0E8] animate-pulse cursor-pointer hover:scale-105' : 'bg-transparent border-[#F5F0E8]/10 text-[#F5F0E8]/10 disabled:opacity-35'}`}
+                  >
+                    FREE
                   </button>
+                </div>
+                <p className="text-[0.58rem] text-[#F5F0E8]/40 uppercase tracking-wider text-center">Every order adds an authentic digital stamp block.</p>
+              </div>
+
+              {/* Order Selection Directory */}
+              <div className="space-y-4 text-xs pt-2">
+                <div>
+                  <h3 className="text-[0.6rem] tracking-[0.15em] uppercase text-[#8A9E8C] font-semibold mb-2">Bespoke Coffee Bar</h3>
+                  <div className="space-y-1.5">
+                    <button onClick={() => openCustomizer('Cortado Espresso', 25, true)} className="w-full flex justify-between items-center text-left hover:text-[#B8734A] transition-colors group bg-transparent border-none p-0 cursor-pointer">
+                      <span className="group-hover:underline">Cortado</span><span className="font-medium bg-[#FDFCF9] px-1.5 py-0.5 rounded-[2px] border border-[#D5CFC4]">25 MAD +</span>
+                    </button>
+                    <button onClick={() => openCustomizer('Rose & Cardamom Latte', 45, true)} className="w-full flex justify-between items-center text-left hover:text-[#B8734A] transition-colors group bg-transparent border-none p-0 cursor-pointer">
+                      <span className="group-hover:underline">Rose Latte</span><span className="font-medium bg-[#FDFCF9] px-1.5 py-0.5 rounded-[2px] border border-[#D5CFC4]">45 MAD +</span>
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="text-[0.6rem] tracking-[0.15em] uppercase text-[#8A9E8C] font-semibold mb-2">Workspace Spaces</h3>
+                  <div className="space-y-1.5">
+                    <button onClick={() => openCustomizer('Quiet Focus Desk', 150, false)} className="w-full flex justify-between items-center text-left hover:text-[#B8734A] transition-colors group bg-transparent border-none p-0 cursor-pointer">
+                      <span className="group-hover:underline">Quiet Focus Desk</span><span className="font-medium bg-[#FDFCF9] px-1.5 py-0.5 rounded-[2px] border border-[#D5CFC4]">150 MAD +</span>
+                    </button>
+                  </div>
                 </div>
               </div>
             </aside>
 
-            {/* COLUMN 2 & 3: MAIN APP MODULE CONTROLLER PANEL */}
+            {/* COLUMN 2 & 3: CENTER NAVIGATION HUB AND CONSOLE PANELS */}
             <div className="lg:col-span-2 flex flex-col bg-[#FDFCF9] border border-[#D5CFC4] rounded-[2px] p-5 h-[68vh] lg:h-[75vh] justify-between">
               
-              {/* Navigation Bar Header Links */}
               <div className="flex border-b border-[#D5CFC4] pb-2 mb-4 gap-6 text-xs uppercase tracking-widest font-medium overflow-x-auto whitespace-nowrap">
                 <button onClick={() => setActiveTab('chat')} className={`pb-1 bg-transparent border-none cursor-pointer ${activeTab === 'chat' ? 'border-b-2 border-[#B8734A] text-[#1A1714]' : 'text-[#B0A99E]'}`}>Salon AI</button>
                 <button onClick={() => setActiveTab('checkout')} className={`pb-1 bg-transparent border-none cursor-pointer relative ${activeTab === 'checkout' ? 'border-b-2 border-[#B8734A] text-[#1A1714]' : 'text-[#B0A99E]'}`}>
-                  Checkout & Apple Pay {cart.length > 0 && <span className="ml-1 bg-[#B8734A] text-[#F5F0E8] rounded-full text-[0.55rem] px-1">{cart.length}</span>}
+                  Checkout Register {cart.length > 0 && <span className="ml-1 bg-[#B8734A] text-[#F5F0E8] rounded-full text-[0.55rem] px-1">{cart.length}</span>}
                 </button>
-                <button onClick={() => setActiveTab('board')} className={`pb-1 bg-transparent border-none cursor-pointer ${activeTab === 'board' ? 'border-b-2 border-[#B8734A] text-[#1A1714]' : 'text-[#B0A99E]'}`}>Medina Connection Board</button>
+                <button onClick={() => setActiveTab('board')} className={`pb-1 bg-transparent border-none cursor-pointer ${activeTab === 'board' ? 'border-b-2 border-[#B8734A] text-[#1A1714]' : 'text-[#B0A99E]'}`}>Medina Board</button>
                 <button onClick={() => setActiveTab('network')} className={`pb-1 bg-transparent border-none cursor-pointer ${activeTab === 'network' ? 'border-b-2 border-[#B8734A] text-[#1A1714]' : 'text-[#B0A99E]'}`}>Member Pings</button>
               </div>
 
-              {/* TAB SUBWINDOWS SWITCH SCREEN ARRAYS */}
               <div className="flex-1 overflow-y-auto pr-1 style-scrollbar">
                 
-                {/* WINDOW 1: AI SALON CONVERSATIONS */}
+                {/* WINDOW 1: CONVERSATION ENDPOINT */}
                 {activeTab === 'chat' && (
                   <div className="space-y-4 h-full flex flex-col justify-between">
                     <div className="space-y-4 overflow-y-auto flex-1 max-h-[48vh] lg:max-h-[55vh]">
                       {messages.length === 0 ? (
                         <div className="text-center py-20 space-y-2">
                           <p className="font-['Cormorant_Garamond'] italic text-2xl text-[#6B6460]">"Salam Alaykum."</p>
-                          <p className="text-[0.68rem] tracking-[0.12em] uppercase text-[#8A9E8C]">Anis is online and tracking your commands... ✨</p>
+                          <p className="text-[0.68rem] tracking-[0.12em] uppercase text-[#8A9E8C]">Anis is tracking your commands. Rewards update on checkout completion... ✨</p>
                         </div>
                       ) : (
                         messages.map((m, idx) => (
@@ -273,31 +345,25 @@ export default function FullyLoadedIntegratedApp() {
                     </div>
                     
                     <form onSubmit={handleSendMessage} className="border-t border-[#D5CFC4] pt-3 flex items-center relative">
-                      <input
-                        type="text" value={inputMessage} onChange={(e) => setInputMessage(e.target.value)}
-                        placeholder={`Ask Anis anything, ${guestName || 'Guest'}...`}
-                        className="w-full bg-transparent py-2 outline-none text-sm border-b border-transparent focus:border-[#B8734A]"
-                      />
+                      <input type="text" value={inputMessage} onChange={(e) => setInputMessage(e.target.value)} placeholder={`Speak with Anis, ${guestName || 'Guest'}...`} className="w-full bg-transparent py-2 outline-none text-sm border-b border-transparent focus:border-[#B8734A]" />
                       <button type="submit" className="absolute right-1 text-xs uppercase tracking-widest text-[#B8734A] font-medium bg-transparent border-none cursor-pointer">Send</button>
                     </form>
                   </div>
                 )}
 
-                {/* WINDOW 2: RESTORED FULL APPLE PAY GATEWAY INTERACTIVE COMPONENT */}
+                {/* WINDOW 2: BILLING WITH DUAL SELECTORS BACKED BY AUTOMATIC LOYALTY CREDIT PUSH */}
                 {activeTab === 'checkout' && (
                   <div className="space-y-6 p-1 animate-[fadeUp_0.2s_ease_both]">
                     <div>
-                      <h3 className="font-['Cormorant_Garamond'] text-xl text-[#1A1714]">Secure Terminal Ledger</h3>
-                      <p className="text-[0.7rem] text-[#6B6460] uppercase tracking-wider">Settling balances instantly clears active room reservations.</p>
+                      <h3 className="font-['Cormorant_Garamond'] text-xl text-[#1A1714]">Member Invoice Registry</h3>
+                      <p className="text-[0.7rem] text-[#6B6460] uppercase tracking-wider">Completing payments adds 1 stamp block to your Ritual Circle card automatically.</p>
                     </div>
                     
                     {cart.length === 0 ? (
-                      <div className="text-center py-12 border border-dashed border-[#D5CFC4] p-4 text-xs text-[#B0A99E] uppercase tracking-widest">
-                        Your billing card list is clean.
-                      </div>
+                      <div className="text-center py-12 border border-dashed border-[#D5CFC4] p-4 text-xs text-[#B0A99E] uppercase tracking-widest">Cart statements empty.</div>
                     ) : (
                       <>
-                        <div className="space-y-2 max-h-[25vh] overflow-y-auto">
+                        <div className="space-y-2 max-h-[22vh] overflow-y-auto">
                           {cart.map((c) => (
                             <div key={c.id} className="flex justify-between items-center text-xs py-2 border-b border-[#D5CFC4]/50 bg-[#EDEBE3]/40 px-3 rounded-[1px]">
                               <span>{c.item}</span>
@@ -314,130 +380,67 @@ export default function FullyLoadedIntegratedApp() {
                           <span className="text-[#B8734A] font-bold text-base">{calculateTotal()} MAD</span>
                         </div>
 
-                        {/* 💳 RESTORED: NATIVE LOOKING BLACK APPLE PAY BUTTON INTEGRATION MODULE */}
                         <div className="pt-4 space-y-3">
                           {paymentStatus === 'idle' && (
-                            <button 
-                              onClick={processApplePay}
-                              type="button"
-                              className="w-full bg-[#1A1714] hover:bg-black text-[#F5F0E8] font-normal py-3.5 rounded-[4px] flex items-center justify-center gap-2 transition-all active:scale-[0.99] border-none cursor-pointer"
-                            >
-                              {/* Inline Vector Asset Minimal Apple Silhouette */}
-                              <svg className="w-4 h-4 fill-current" viewBox="0 0 170 170">
-                                <path d="M150.37 130.25c-2.45 5.66-5.35 10.87-8.71 15.66-4.58 6.53-8.33 11.05-11.22 13.56-4.48 4.12-9.28 6.23-14.42 6.35-3.69 0-8.14-1.05-13.32-3.18-5.19-2.12-9.97-3.17-14.34-3.17-4.58 0-9.49 1.05-14.75 3.17-5.26 2.13-9.5 3.24-12.74 3.35-4.34.13-9.13-1.92-14.37-6.15-3.34-2.73-7.23-7.46-11.66-14.19-4.81-7.3-8.87-16.38-12.18-27.26-3.31-10.87-4.97-21.36-4.97-31.47 0-17.91 4.59-31.44 13.77-40.59 7.37-7.38 16.21-11.13 26.54-11.26 5.35 0 10.98 1.57 16.91 4.7 5.92 3.14 10.05 4.7 12.38 4.7 2.11 0 6.13-1.56 12.06-4.7 5.93-3.13 11.16-4.63 15.69-4.5 14.8.63 25.86 6.01 33.19 16.14-13.69 8.35-20.37 19.39-20.02 33.13.36 10.74 4.26 19.55 11.71 26.43 7.46 6.89 16.27 10.51 26.43 10.86-2.5 7.12-5.74 14.31-9.72 21.57zM119.22 35.6c0-8.48-3.04-16.03-9.11-22.66C104.05 6.3 96.58 2.64 87.7 2c.12 8.36 3.29 15.82 9.5 22.38 6.22 6.56 13.61 10.22 22.02 10.98v.24z"/>
-                              </svg>
-                              <span className="font-['DM_Sans'] text-sm font-medium tracking-wide">Pay with Apple Pay</span>
-                            </button>
-                          )}
-
-                          {paymentStatus === 'processing' && (
-                            <div className="w-full border border-[#D5CFC4] p-4 text-center text-xs text-[#6B6460] rounded-[4px] uppercase tracking-widest bg-[#EDEBE3] animate-pulse">
-                              Connecting to Apple Pay secure enclave... 🛡️
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                              <button onClick={processCashPayment} type="button" className="w-full bg-[#8A9E8C] hover:bg-[#788C7A] text-[#F5F0E8] text-xs tracking-widest uppercase font-medium py-3.5 rounded-[2px] border-none cursor-pointer transition-colors">Pay Cash at Counter</button>
+                              <button onClick={processApplePay} type="button" className="w-full bg-[#1A1714] hover:bg-black text-[#F5F0E8] font-medium py-3.5 rounded-[2px] flex items-center justify-center gap-2 border-none cursor-pointer">
+                                <svg className="w-4 h-4 fill-current" viewBox="0 0 170 170"><path d="M150.37 130.25c-2.45 5.66-5.35 10.87-8.71 15.66-4.58 6.53-8.33 11.05-11.22 13.56-4.48 4.12-9.28 6.23-14.42 6.35-3.69 0-8.14-1.05-13.32-3.18-5.19-2.12-9.97-3.17-14.34-3.17-4.58 0-9.49 1.05-14.75 3.17-5.26 2.13-9.5 3.24-12.74 3.35-4.34.13-9.13-1.92-14.37-6.15-3.34-2.73-7.23-7.46-11.66-14.19-4.81-7.3-8.87-16.38-12.18-27.26-3.31-10.87-4.97-21.36-4.97-31.47 0-17.91 4.59-31.44 13.77-40.59 7.37-7.38 16.21-11.13 26.54-11.26 5.35 0 10.98 1.57 16.91 4.7 5.92 3.14 10.05 4.7 12.38 4.7 2.11 0 6.13-1.56 12.06-4.7 5.93-3.13 11.16-4.63 15.69-4.5 14.8.63 25.86 6.01 33.19 16.14-13.69 8.35-20.37 19.39-20.02 33.13.36 10.74 4.26 19.55 11.71 26.43 7.46 6.89 16.27 10.51 26.43 10.86-2.5 7.12-5.74 14.31-9.72 21.57zM119.22 35.6c0-8.48-3.04-16.03-9.11-22.66C104.05 6.3 96.58 2.64 87.7 2c.12 8.36 3.29 15.82 9.5 22.38 6.22 6.56 13.61 10.22 22.02 10.98v.24z"/></svg>
+                                <span className="text-xs tracking-wide">Apple Pay</span>
+                              </button>
                             </div>
                           )}
 
-                          {paymentStatus === 'success' && (
-                            <div className="w-full bg-[#8A9E8C] text-[#F5F0E8] p-4 text-center text-xs rounded-[4px] uppercase tracking-widest font-medium animate-bounce">
-                              ✓ Payment Settled Successfully. Database Logs Updated. 🕊️
-                            </div>
-                          )}
+                          {paymentStatus === 'processing_apple' && <div className="w-full border border-[#D5CFC4] p-4 text-center text-xs text-[#6B6460] rounded-[2px] uppercase tracking-widest bg-[#EDEBE3] animate-pulse">Connecting to biometric Apple Pay layer... 🛡️</div>}
+                          {paymentStatus === 'processing_cash' && <div className="w-full border border-[#D5CFC4] p-4 text-center text-xs text-[#6B6460] rounded-[2px] uppercase tracking-widest bg-[#EDEBE3] animate-pulse">Ticket sent to register. Please pay cashier... 🧾</div>}
+                          {paymentStatus === 'success_apple' && <div className="w-full bg-[#8A9E8C] text-[#F5F0E8] p-4 text-center text-xs rounded-[2px] uppercase tracking-widest font-medium animate-bounce">✓ Apple Pay Settled. +1 loyalty Stamp Credited! ☕️</div>}
+                          {paymentStatus === 'success_cash' && <div className="w-full bg-[#B8734A] text-[#F5F0E8] p-4 text-center text-xs rounded-[2px] uppercase tracking-widest font-medium">✓ Cash ticket logged. Complete payment at counter to authorize stamp. 🏺</div>}
                         </div>
                       </>
                     )}
                   </div>
                 )}
 
-                {/* WINDOW 3: RESTORED FULL CLIENT-TO-CLIENT ADV ADVERTISEMENT CONNECTION BOARD */}
+                {/* BULLETIN MODULE */}
                 {activeTab === 'board' && (
                   <div className="space-y-6 p-1 animate-[fadeUp_0.2s_ease_both]">
                     <div>
                       <h3 className="font-['Cormorant_Garamond'] text-xl text-[#1A1714]">The Medina Circle Board</h3>
-                      <p className="text-[0.7rem] text-[#6B6460] uppercase tracking-wider">A premium bridge for local remote workers, artists, and founders to synchronize.</p>
+                      <p className="text-[0.7rem] text-[#6B6460] uppercase tracking-wider">A premium bridge for local remote workers to collaborate.</p>
                     </div>
-
-                    {/* New Advertisement Dynamic Injection Form */}
                     <form onSubmit={postNewAd} className="bg-[#EDEBE3] p-4 rounded-[2px] border border-[#D5CFC4] space-y-3">
-                      <span className="text-[0.6rem] tracking-widest uppercase font-bold text-[#B8734A] block">Advertise / Connect with members</span>
+                      <span className="text-[0.6rem] tracking-widest uppercase font-bold text-[#B8734A] block">Broadcast Announcement</span>
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                        <input 
-                          type="text" placeholder="Ad Headline (e.g. Graphic Designer Available)" 
-                          value={newAdTitle} onChange={(e) => setNewAdTitle(e.target.value)}
-                          className="sm:col-span-2 px-3 py-1.5 border border-[#D5CFC4] text-xs bg-[#FDFCF9] outline-none rounded-[2px] text-[#1A1714]"
-                          required
-                        />
-                        <select 
-                          value={newAdTag} onChange={(e) => setNewAdTag(e.target.value)}
-                          className="px-2 py-1.5 border border-[#D5CFC4] text-xs bg-[#FDFCF9] outline-none rounded-[2px] text-[#1A1714]"
-                        >
-                          <option value="Collaboration">Collaboration</option>
-                          <option value="Freelance Service">Freelance Service</option>
-                          <option value="Tech Request">Tech Request</option>
-                        </select>
+                        <input type="text" placeholder="Headline..." value={newAdTitle} onChange={(e) => setNewAdTitle(e.target.value)} className="sm:col-span-2 px-3 py-1.5 border border-[#D5CFC4] text-xs bg-[#FDFCF9] outline-none rounded-[2px]" required />
+                        <select value={newAdTag} onChange={(e) => setNewAdTag(e.target.value)} className="px-2 py-1.5 border border-[#D5CFC4] text-xs bg-[#FDFCF9] outline-none rounded-[2px] text-[#1A1714]"><option value="Collaboration">Collaboration</option><option value="Freelance Service">Freelance Service</option></select>
                       </div>
-                      <textarea 
-                        placeholder="Detail your request, handle, background, or offer here..."
-                        value={newAdDesc} onChange={(e) => setNewAdDesc(e.target.value)}
-                        className="w-full h-16 p-3 border border-[#D5CFC4] text-xs bg-[#FDFCF9] outline-none rounded-[2px] text-[#1A1714] resize-none"
-                        required
-                      />
-                      <button type="submit" className="w-full py-2 bg-[#1A1714] hover:bg-[#B8734A] text-[#F5F0E8] text-[0.65rem] tracking-widest uppercase rounded-[2px] font-medium transition-colors border-none cursor-pointer">
-                        Broadcast to Board Registry
-                      </button>
+                      <textarea placeholder="Detail your information, handle or requests..." value={newAdDesc} onChange={(e) => setNewAdDesc(e.target.value)} className="w-full h-14 p-2 border border-[#D5CFC4] text-xs bg-[#FDFCF9] outline-none rounded-[2px] resize-none" required />
+                      <button type="submit" className="w-full py-2 bg-[#1A1714] hover:bg-[#B8734A] text-[#F5F0E8] text-[0.65rem] tracking-widest uppercase rounded-[2px] transition-colors border-none cursor-pointer">Broadcast to Board</button>
                     </form>
-
-                    {/* Board Listings Render Output */}
-                    <div className="grid grid-cols-1 gap-4 pt-2">
+                    <div className="space-y-3">
                       {bulletins.map((b) => (
-                        <div key={b.id} className="bg-[#EDEBE3]/40 p-4 rounded-[2px] border border-[#D5CFC4] relative group animate-[fadeUp_0.3s_ease_both]">
+                        <div key={b.id} className="bg-[#EDEBE3]/40 p-4 rounded-[2px] border border-[#D5CFC4] relative animate-[fadeUp_0.3s_ease_both]">
                           <span className="text-[0.55rem] tracking-widest uppercase bg-[#B8734A] text-[#F5F0E8] px-2 py-0.5 rounded-[1px] absolute top-4 right-4">{b.tag}</span>
-                          <span className="text-[0.6rem] tracking-widest text-[#8A9E8C] uppercase font-semibold block">{b.postedBy}</span>
-                          <h4 className="text-sm font-medium text-[#1A1714] mt-1">{b.title}</h4>
-                          <p className="text-xs text-[#6B6460] leading-relaxed font-light mt-1.5">{b.desc}</p>
-                          <div className="mt-3 pt-2 border-t border-[#D5CFC4]/50 flex justify-between items-center text-[0.65rem] text-[#B8734A]">
-                            <span>Contact Bridge:</span>
-                            <span className="font-medium bg-[#FDFCF9] px-2 py-0.5 border border-[#D5CFC4] rounded-[2px] text-[#1A1714] font-mono">{b.contactHandle}</span>
-                          </div>
+                          <span className="text-[0.6rem] text-[#8A9E8C] uppercase font-semibold block">{b.postedBy}</span>
+                          <h4 className="text-sm font-medium mt-1">{b.title}</h4>
+                          <p className="text-xs text-[#6B6460] font-light mt-1">{b.desc}</p>
                         </div>
                       ))}
                     </div>
                   </div>
                 )}
 
-                {/* WINDOW 4: RESTORED MEMBER PINGS & ACTIVE USER DIRECTORY */}
+                {/* NETWORK MEMBER REGISTRY */}
                 {activeTab === 'network' && (
                   <div className="space-y-4 p-1 animate-[fadeUp_0.2s_ease_both]">
-                    <div>
-                      <h3 className="font-['Cormorant_Garamond'] text-xl text-[#1A1714]">Active Workspace Directory</h3>
-                      <p className="text-[0.7rem] text-[#6B6460] uppercase tracking-wider">Pinged signals from members currently residing inside the building layout.</p>
-                    </div>
-
-                    <div className="space-y-3 pt-2">
+                    <h3 className="font-['Cormorant_Garamond'] text-xl text-[#1A1714]">Active Dashboard Directory</h3>
+                    <div className="space-y-3">
                       {pings.map((p) => (
-                        <div key={p.id} className="bg-[#EDEBE3]/40 border border-[#D5CFC4] p-4 rounded-[2px] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div key={p.id} className="bg-[#EDEBE3]/40 border border-[#D5CFC4] p-4 rounded-[2px] flex justify-between items-start">
                           <div className="space-y-1">
-                            <div className="flex items-center gap-2">
-                              <span className="w-1.5 h-1.5 rounded-full bg-[#8A9E8C]" />
-                              <h4 className="text-sm font-medium text-[#1A1714]">{p.user}</h4>
-                              <span className="text-[0.55rem] text-[#B0A99E] uppercase tracking-widest">({p.time})</span>
-                            </div>
+                            <h4 className="text-sm font-medium text-[#1A1714]">{p.user}</h4>
                             <p className="text-xs text-[#6B6460] font-light">{p.action}</p>
-                            
-                            {/* Skills / Intersect Highlights tags */}
-                            {p.skills && (
-                              <div className="flex flex-wrap gap-1.5 pt-1.5">
-                                {p.skills.map((s, idx) => (
-                                  <span key={idx} className="bg-[#FDFCF9] border border-[#D5CFC4] text-[0.55rem] text-[#6B6460] px-1.5 py-0.5 rounded-[2px]">{s}</span>
-                                ))}
-                              </div>
-                            )}
                           </div>
-                          
-                          {p.contact && (
-                            <div className="text-right">
-                              <span className="text-[0.55rem] text-[#B0A99E] block uppercase tracking-wider">Signal Reach</span>
-                              <span className="text-xs font-mono text-[#B8734A] bg-[#FDFCF9] px-2 py-1 rounded-[2px] border border-[#D5CFC4] inline-block mt-0.5">{p.contact}</span>
-                            </div>
-                          )}
                         </div>
                       ))}
                     </div>
@@ -447,7 +450,7 @@ export default function FullyLoadedIntegratedApp() {
               </div>
             </div>
 
-            {/* COLUMN 4: STATION BADGING SYMBOL CARD */}
+            {/* COLUMN 4: BADGING CARD */}
             <aside className="lg:col-span-1 bg-[#1A1714] text-[#F5F0E8] border border-[#1A1714] rounded-[2px] p-5 space-y-4 h-full flex flex-col justify-between">
               <div className="space-y-3">
                 <span className="text-[0.55rem] tracking-[0.2em] text-[#C9A96E] uppercase block font-semibold">Active Sanctuary</span>
@@ -455,9 +458,9 @@ export default function FullyLoadedIntegratedApp() {
                 <div className="w-6 h-[1px] bg-[#C9A96E] mt-2" />
               </div>
               <div className="text-[0.65rem] space-y-1 text-[#F5F0E8]/50 uppercase tracking-wider pt-8">
-                <p>● Fiber Connection: Functional</p>
-                <p>● Guéliz Node Router: Active</p>
-                <p>● Medina Signal Link: Secure</p>
+                <p>● Connection: High-Speed Fiber</p>
+                <p>● Cash Settle Node: Active</p>
+                <p>● Loyalty Cards: Functional</p>
               </div>
             </aside>
 
@@ -467,7 +470,7 @@ export default function FullyLoadedIntegratedApp() {
     );
   }
 
-  // ─── COMPONENT VIEW 2: SPLIT SCREEN INTERACTIVE DOORWAY ───
+  // ─── COMPONENT VIEW 2: ENTRANCE ───
   return (
     <>
       <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -510,10 +513,8 @@ export default function FullyLoadedIntegratedApp() {
       </main>
 
       <style jsx global>{`
-        @keyframes fadeUp {
-          from { opacity: 0; transform: translateY(14px); }
-          to   { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
       `}</style>
     </>
   );
