@@ -46,18 +46,18 @@ export default function EntryPage() {
     }
   };
 
-  // ─── CONDITION 1: SHOW THE CHAT SPACE ───
+  // ─── CONDITION 1: SHOW THE CHAT SPACE + MENU SIDEBAR ───
   if (showChat) {
     return (
       <>
-        <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght=0,300;0,400;1,300&family=DM+Sans:wght=300;400&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet" />
         <main className="min-h-screen bg-[#F5F0E8] text-[#1A1714] font-['DM_Sans'] flex flex-col p-4 md:p-8 select-none">
           
           {/* Minimal Editorial Top Header */}
-          <header className="max-w-4xl w-full mx-auto flex justify-between items-center border-b border-[#D5CFC4] pb-4 mb-6">
+          <header className="max-w-6xl w-full mx-auto flex justify-between items-center border-b border-[#D5CFC4] pb-4 mb-6">
             <div>
               <h1 className="font-['Cormorant_Garamond'] text-2xl tracking-[0.2em] uppercase text-[#B8734A]">T I M E</h1>
-              <p className="text-[0.65rem] tracking-[0.1em] uppercase text-[#6B6460]">Marrakech · AI Salon</p>
+              <p className="text-[0.65rem] tracking-[0.1em] uppercase text-[#6B6460]">Marrakech · Workspace & AI Salon</p>
             </div>
             <button 
               onClick={() => setShowChat(false)}
@@ -67,7 +67,7 @@ export default function EntryPage() {
             </button>
           </header>
 
-          {/* Guest Name Initialization Banner — FIXED with explicit button confirm trigger */}
+          {/* Guest Name Initialization Banner */}
           {!guestName && (
             <div className="max-w-2xl w-full mx-auto mb-6 bg-[#EDEBE3] p-6 rounded-[2px] border border-[#D5CFC4] text-center space-y-4 animate-[fadeUp_0.4s_ease_both]">
               <p className="text-xs tracking-wide text-[#6B6460] uppercase font-medium">
@@ -102,48 +102,111 @@ export default function EntryPage() {
             </div>
           )}
 
-          {/* Chat Conversational Box */}
-          <div className="flex-1 max-w-2xl w-full mx-auto overflow-y-auto space-y-6 py-4 pr-2 style-scrollbar">
-            {messages.length === 0 ? (
-              <div className="text-center py-20 space-y-3">
-                <p className="font-['Cormorant_Garamond'] italic text-2xl text-[#6B6460]">"Salam Alaykum. Marhaban."</p>
-                <p className="text-[0.7rem] tracking-[0.12em] uppercase text-[#8A9E8C]">Anis is listening quietly inside the courtyard room... ✨</p>
+          {/* Main Workspace Split Layout: Menu Sidebar (Left) | Chat Loop (Right) */}
+          <div className="flex-1 max-w-6xl w-full mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch overflow-hidden">
+            
+            {/* 📜 THE TIME CAFÉ MENU SIDEBAR PANEL */}
+            <aside className="lg:col-span-1 bg-[#EDEBE3] border border-[#D5CFC4] rounded-[2px] p-6 space-y-6 overflow-y-auto max-h-[40vh] lg:max-h-none animate-[fadeUp_0.5s_ease_both]">
+              <div>
+                <h2 className="font-['Cormorant_Garamond'] text-lg tracking-wider text-[#B8734A] uppercase mb-1">La Carte</h2>
+                <div className="w-6 h-[1px] bg-[#B8734A]" />
               </div>
-            ) : (
-              messages.map((m, idx) => (
-                <div key={idx} className={`flex flex-col ${m.role === 'user' ? 'items-end' : 'items-start'} animate-[fadeUp_0.4s_ease_both]`}>
-                  <span className="text-[0.6rem] tracking-[0.1em] uppercase text-[#6B6460] mb-1">
-                    {m.role === 'user' ? (guestName || 'You') : 'Anis'}
-                  </span>
-                  <div className={`max-w-[85%] text-sm leading-relaxed p-3 rounded-[2px] ${m.role === 'user' ? 'bg-[#EDEBE3] border border-[#D5CFC4] text-[#1A1714]' : 'bg-[#1A1714] text-[#F5F0E8]'}`}>
-                    {m.content}
+
+              {/* Coffee Section */}
+              <div className="space-y-3">
+                <h3 className="text-[0.65rem] tracking-[0.15em] uppercase text-[#8A9E8C] font-semibold">Specialty Coffee</h3>
+                <div className="space-y-2 text-xs">
+                  <div className="flex justify-between border-b border-[#D5CFC4]/50 pb-1">
+                    <span>Cortado</span> <span className="font-medium">25 MAD</span>
+                  </div>
+                  <div className="flex justify-between border-b border-[#D5CFC4]/50 pb-1">
+                    <span>Single Origin Pour Over</span> <span className="font-medium">45 MAD</span>
+                  </div>
+                  <div className="flex justify-between border-b border-[#D5CFC4]/50 pb-1">
+                    <span>Rose & Cardamom Latte</span> <span className="font-medium">45 MAD</span>
+                  </div>
+                  <div className="flex justify-between border-b border-[#D5CFC4]/50 pb-1">
+                    <span>Iced Espresso Shakerato</span> <span className="font-medium">35 MAD</span>
                   </div>
                 </div>
-              ))
-            )}
-            {isLoading && (
-              <p className="text-[0.65rem] tracking-[0.15em] uppercase text-[#8A9E8C] animate-pulse">Anis is pouring thoughts... 🍃</p>
-            )}
-          </div>
+              </div>
 
-          {/* Input Field Line */}
-          <form onSubmit={handleSendMessage} className="max-w-2xl w-full mx-auto mt-4 border-t border-[#D5CFC4] pt-4">
-            <div className="relative flex items-center">
-              <input
-                type="text"
-                value={inputMessage}
-                onChange={(e) => setInputMessage(e.target.value)}
-                placeholder={guestName ? `Speak to Anis, ${guestName}...` : "Choose a name above or type here directly..."}
-                className="w-full bg-transparent py-3 pl-2 pr-12 text-sm text-[#1A1714] border-b border-transparent outline-none transition-colors placeholder-[#B0A99E] focus:border-[#B8734A]"
-              />
-              <button 
-                type="submit"
-                className="absolute right-2 p-2 text-xs tracking-widest text-[#B8734A] uppercase hover:text-[#1A1714] transition-colors"
-              >
-                Send →
-              </button>
+              {/* Bakery Section */}
+              <div className="space-y-3">
+                <h3 className="text-[0.65rem] tracking-[0.15em] uppercase text-[#8A9E8C] font-semibold">Artisanal Bakery</h3>
+                <div className="space-y-2 text-xs">
+                  <div className="flex justify-between border-b border-[#D5CFC4]/50 pb-1">
+                    <span>Pistachio Stuffed Croissant</span> <span className="font-medium">45 MAD</span>
+                  </div>
+                  <div className="flex justify-between border-b border-[#D5CFC4]/50 pb-1">
+                    <span>Fudge Cocoa Brownie</span> <span className="font-medium">35 MAD</span>
+                  </div>
+                  <div className="flex justify-between border-b border-[#D5CFC4]/50 pb-1">
+                    <span>San Sebastián Honey Cake</span> <span className="font-medium">50 MAD</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Workspaces Section */}
+              <div className="space-y-3">
+                <h3 className="text-[0.65rem] tracking-[0.15em] uppercase text-[#8A9E8C] font-semibold">Workspace Layouts</h3>
+                <div className="space-y-2 text-xs">
+                  <div className="flex justify-between border-b border-[#D5CFC4]/50 pb-1">
+                    <span>Quiet Focus Desk</span> <span className="font-medium">150 MAD / 4h</span>
+                  </div>
+                  <div className="flex justify-between border-b border-[#D5CFC4]/50 pb-1">
+                    <span>Private Meeting Room</span> <span className="font-medium">400 MAD / 2h</span>
+                  </div>
+                </div>
+              </div>
+            </aside>
+
+            {/* 💬 THE ACTIVE CONVERSATION SALON */}
+            <div className="lg:col-span-2 flex flex-col bg-[#FDFCF9] border border-[#D5CFC4] rounded-[2px] p-6 overflow-hidden">
+              <div className="flex-1 overflow-y-auto space-y-6 pr-2 style-scrollbar">
+                {messages.length === 0 ? (
+                  <div className="text-center py-24 space-y-3">
+                    <p className="font-['Cormorant_Garamond'] italic text-2xl text-[#6B6460]">"Salam Alaykum. Marhaban."</p>
+                    <p className="text-[0.7rem] tracking-[0.12em] uppercase text-[#8A9E8C]">Anis is listening quietly inside the courtyard room... ✨</p>
+                  </div>
+                ) : (
+                  messages.map((m, idx) => (
+                    <div key={idx} className={`flex flex-col ${m.role === 'user' ? 'items-end' : 'items-start'} animate-[fadeUp_0.4s_ease_both]`}>
+                      <span className="text-[0.6rem] tracking-[0.1em] uppercase text-[#6B6460] mb-1">
+                        {m.role === 'user' ? (guestName || 'You') : 'Anis'}
+                      </span>
+                      <div className={`max-w-[85%] text-sm leading-relaxed p-3 rounded-[2px] ${m.role === 'user' ? 'bg-[#EDEBE3] border border-[#D5CFC4] text-[#1A1714]' : 'bg-[#1A1714] text-[#F5F0E8]'}`}>
+                        {m.content}
+                      </div>
+                    </div>
+                  ))
+                )}
+                {isLoading && (
+                  <p className="text-[0.65rem] tracking-[0.15em] uppercase text-[#8A9E8C] animate-pulse">Anis is pouring thoughts... 🍃</p>
+                )}
+              </div>
+
+              {/* Chat Input Bar */}
+              <form onSubmit={handleSendMessage} className="mt-4 border-t border-[#D5CFC4] pt-4">
+                <div className="relative flex items-center">
+                  <input
+                    type="text"
+                    value={inputMessage}
+                    onChange={(e) => setInputMessage(e.target.value)}
+                    placeholder={guestName ? `Speak to Anis, ${guestName}...` : "Choose a name above or type here directly..."}
+                    className="w-full bg-transparent py-3 pl-2 pr-12 text-sm text-[#1A1714] border-b border-transparent outline-none transition-colors placeholder-[#B0A99E] focus:border-[#B8734A]"
+                  />
+                  <button 
+                    type="submit"
+                    className="absolute right-2 p-2 text-xs tracking-widest text-[#B8734A] uppercase hover:text-[#1A1714] transition-colors"
+                  >
+                    Send →
+                  </button>
+                </div>
+              </form>
             </div>
-          </form>
+
+          </div>
         </main>
       </>
     );
@@ -154,7 +217,7 @@ export default function EntryPage() {
     <>
       <link rel="preconnect" href="https://fonts.googleapis.com" />
       <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-      <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght=0,300;0,400;1,300;1,400&family=DM+Sans:wght=300;400&display=swap" rel="stylesheet" />
+      <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet" />
 
       <main className="min-h-screen grid grid-cols-1 md:grid-cols-2 bg-[#F5F0E8] text-[#1A1714] font-['DM_Sans',_sans-serif] font-light antialiased">
         <section className="relative bg-[#1A1714] overflow-hidden flex flex-col justify-end p-8 md:p-12 min-h-[40vh] md:min-h-screen group">
