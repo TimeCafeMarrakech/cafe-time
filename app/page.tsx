@@ -133,8 +133,10 @@ export default function LuxuryVisualLoungeApp() {
         {/* THREE-COLUMN SYSTEM MATRIX */}
         <div className="flex-1 max-w-7xl w-full mx-auto grid grid-cols-1 lg:grid-cols-4 gap-6 items-start overflow-hidden pb-4">
           
-          {/* CLEAN TYPOGRAPHIC SIDEBAR CATALOG PANEL */}
-          <aside className="lg:col-span-1 bg-[#EDEBE3] border border-[#D5CFC4] rounded-[2px] p-4 space-y-6 max-h-[52vh] lg:max-h-[82vh] overflow-y-auto style-scrollbar">
+          {/* 📜 RESTORED DEEP TYPOGRAPHIC CAFE MENU SIDEBAR */}
+          <aside className="lg:col-span-1 bg-[#EDEBE3] border border-[#D5CFC4] rounded-[2px] p-4 space-y-5 max-h-[52vh] lg:max-h-[82vh] overflow-y-auto style-scrollbar">
+            
+            {/* Loyalty Tracker Node */}
             <div className="bg-[#1A1714] text-[#F5F0E8] p-4 rounded-[2px] border border-black space-y-2.5">
               <div className="flex justify-between items-center text-[0.6rem] uppercase tracking-widest">
                 <span className="text-[#C9A96E] font-medium">{lang === 'EN' ? 'Ritual Loop' : 'Rituel Boucle'}</span>
@@ -150,24 +152,81 @@ export default function LuxuryVisualLoungeApp() {
               <div className="w-6 h-[1px] bg-[#B8734A]" />
             </div>
 
-            <div className="space-y-5">
-              {/* Category A */}
+            <div className="space-y-4">
+              
+              {/* Category 1: Single Origin Filter */}
               <div className="space-y-2">
-                <h3 className="text-[0.58rem] tracking-[0.15em] uppercase text-[#8A9E8C] font-semibold mb-2">{lang === 'EN' ? 'Slow Brew & Pour Overs' : 'Extractions Douces'}</h3>
+                <h3 className="text-[0.58rem] tracking-[0.15em] uppercase text-[#8A9E8C] font-semibold border-b border-[#D5CFC4]/50 pb-0.5">{lang === 'EN' ? 'Slow Brew & Pour Overs' : 'Extractions Douces'}</h3>
                 <div className="space-y-2 text-xs">
-                  <button onClick={() => openCustomizer('Ethiopia V60 Single Origin', 'V60 Éthiopie Origine Unique', 45, 'drink')} className="w-full flex justify-between bg-transparent border-none p-0 text-left hover:text-[#B8734A] cursor-pointer"><span>Ethiopia V60 (Floral & Citrus)</span><span className="bg-[#FDFCF9] px-1.5 py-0.5 border border-[#D5CFC4] text-[0.7rem] rounded-[2px]">45 MAD</span></button>
-                  <button onClick={() => openCustomizer('Chemex Colombia Geisha', 'Chemex Colombie Geisha', 55, 'drink')} className="w-full flex justify-between bg-transparent border-none p-0 text-left hover:text-[#B8734A] cursor-pointer"><span>Colombia Geisha (Honey Peach)</span><span className="bg-[#FDFCF9] px-1.5 py-0.5 border border-[#D5CFC4] text-[0.7rem] rounded-[2px]">55 MAD</span></button>
+                  <button onClick={() => openCustomizer('Ethiopia Sidamo V60', 'V60 Éthiopie Sidamo', 45, 'drink')} className="w-full flex justify-between bg-transparent border-none p-0 text-left hover:text-[#B8734A] cursor-pointer">
+                    <div className="flex flex-col">
+                      <span>Ethiopia Sidamo V60</span>
+                      <span className="text-[0.6rem] text-[#6B6460] italic font-light">Notes: Jasmine, Crisp Citrus</span>
+                    </div>
+                    <span className="bg-[#FDFCF9] h-fit px-1.5 py-0.5 border border-[#D5CFC4] text-[0.65rem] rounded-[2px]">45 MAD</span>
+                  </button>
+
+                  <button onClick={() => openCustomizer('Colombia Geisha Chemex', 'Chemex Colombie Geisha', 55, 'drink')} className="w-full flex justify-between bg-transparent border-none p-0 text-left hover:text-[#B8734A] cursor-pointer">
+                    <div className="flex flex-col">
+                      <span>Colombia Geisha Chemex</span>
+                      <span className="text-[0.6rem] text-[#6B6460] italic font-light">Notes: Honey, Yellow Peach</span>
+                    </div>
+                    <span className="bg-[#FDFCF9] h-fit px-1.5 py-0.5 border border-[#D5CFC4] text-[0.65rem] rounded-[2px]">55 MAD</span>
+                  </button>
                 </div>
               </div>
 
-              {/* Category B */}
+              {/* Category 2: Espresso Frameworks */}
               <div className="space-y-2">
-                <h3 className="text-[0.58rem] tracking-[0.15em] uppercase text-[#8A9E8C] font-semibold mb-2">{lang === 'EN' ? 'Espresso Frameworks' : 'Bases Espresso'}</h3>
+                <h3 className="text-[0.58rem] tracking-[0.15em] uppercase text-[#8A9E8C] font-semibold border-b border-[#D5CFC4]/50 pb-0.5">{lang === 'EN' ? 'Espresso Foundations' : 'Bases Espresso'}</h3>
                 <div className="space-y-2 text-xs">
-                  <button onClick={() => openCustomizer('Double Espresso', 'Double Espresso', 20, 'drink')} className="w-full flex justify-between bg-transparent border-none p-0 text-left hover:text-[#B8734A] cursor-pointer"><span>Double Espresso</span><span className="bg-[#FDFCF9] px-1.5 py-0.5 border border-[#D5CFC4] text-[0.7rem] rounded-[2px]">20 MAD</span></button>
-                  <button onClick={() => openCustomizer('Cortado', 'Cortado Classique', 25, 'drink')} className="w-full flex justify-between bg-transparent border-none p-0 text-left hover:text-[#B8734A] cursor-pointer"><span>Cortado</span><span className="bg-[#FDFCF9] px-1.5 py-0.5 border border-[#D5CFC4] text-[0.7rem] rounded-[2px]">25 MAD</span></button>
+                  <button onClick={() => openCustomizer('Double Espresso (Origin Blend)', 'Double Espresso Blend', 20, 'drink')} className="w-full flex justify-between bg-transparent border-none p-0 text-left hover:text-[#B8734A] cursor-pointer"><span>Double Espresso</span><span className="bg-[#FDFCF9] px-1.5 py-0.5 border border-[#D5CFC4] text-[0.65rem] rounded-[2px]">20 MAD</span></button>
+                  <button onClick={() => openCustomizer('Cortado', 'Cortado Classique', 25, 'drink')} className="w-full flex justify-between bg-transparent border-none p-0 text-left hover:text-[#B8734A] cursor-pointer"><span>Cortado</span><span className="bg-[#FDFCF9] px-1.5 py-0.5 border border-[#D5CFC4] text-[0.65rem] rounded-[2px]">25 MAD</span></button>
+                  <button onClick={() => openCustomizer('Flat White', 'Flat White Standard', 35, 'drink')} className="w-full flex justify-between bg-transparent border-none p-0 text-left hover:text-[#B8734A] cursor-pointer"><span>Flat White</span><span className="bg-[#FDFCF9] px-1.5 py-0.5 border border-[#D5CFC4] text-[0.65rem] rounded-[2px]">35 MAD</span></button>
+                  <button onClick={() => openCustomizer('Bespoke Iced Latte', 'Latte Glacé Maison', 38, 'drink')} className="w-full flex justify-between bg-transparent border-none p-0 text-left hover:text-[#B8734A] cursor-pointer"><span>Iced Latte</span><span className="bg-[#FDFCF9] px-1.5 py-0.5 border border-[#D5CFC4] text-[0.65rem] rounded-[2px]">38 MAD</span></button>
                 </div>
               </div>
+
+              {/* Category 3: Marrakech Craft Signatures */}
+              <div className="space-y-2">
+                <h3 className="text-[0.58rem] tracking-[0.15em] uppercase text-[#8A9E8C] font-semibold border-b border-[#D5CFC4]/50 pb-0.5">{lang === 'EN' ? 'Marrakech Craft Signatures' : 'Signatures Artisanales'}</h3>
+                <div className="space-y-2 text-xs">
+                  <button onClick={() => openCustomizer('Rose & Cardamom Latte', 'Latte à la Rose et Cardamome', 45, 'drink')} className="w-full flex justify-between bg-transparent border-none p-0 text-left hover:text-[#B8734A] cursor-pointer">
+                    <div className="flex flex-col">
+                      <span>Rose & Cardamom Latte</span>
+                      <span className="text-[0.6rem] text-[#6B6460] italic font-light">Organic rosewater infusion</span>
+                    </div>
+                    <span className="bg-[#FDFCF9] h-fit px-1.5 py-0.5 border border-[#D5CFC4] text-[0.65rem] rounded-[2px]">45 MAD</span>
+                  </button>
+
+                  <button onClick={() => openCustomizer('Orange Blossom Shakerato', 'Shakerato Fleur d’Oranger', 40, 'drink')} className="w-full flex justify-between bg-transparent border-none p-0 text-left hover:text-[#B8734A] cursor-pointer">
+                    <div className="flex flex-col">
+                      <span>Orange Blossom Shakerato</span>
+                      <span className="text-[0.6rem] text-[#6B6460] italic font-light">Chilled espresso, blossom mist</span>
+                    </div>
+                    <span className="bg-[#FDFCF9] h-fit px-1.5 py-0.5 border border-[#D5CFC4] text-[0.65rem] rounded-[2px]">40 MAD</span>
+                  </button>
+
+                  <button onClick={() => openCustomizer('Medina Mint Cold Brew', 'Cold Brew à la Menthe Fraîche', 42, 'drink')} className="w-full flex justify-between bg-transparent border-none p-0 text-left hover:text-[#B8734A] cursor-pointer">
+                    <div className="flex flex-col">
+                      <span>Medina Mint Cold Brew</span>
+                      <span className="text-[0.6rem] text-[#6B6460] italic font-light">Slow-drip over wild local mint</span>
+                    </div>
+                    <span className="bg-[#FDFCF9] h-fit px-1.5 py-0.5 border border-[#D5CFC4] text-[0.65rem] rounded-[2px]">42 MAD</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Category 4: Artisanal Bakery */}
+              <div className="space-y-2">
+                <h3 className="text-[0.58rem] tracking-[0.15em] uppercase text-[#8A9E8C] font-semibold border-b border-[#D5CFC4]/50 pb-0.5">{lang === 'EN' ? 'Artisanal Bakery' : 'Boulangerie Artisanale'}</h3>
+                <div className="space-y-2 text-xs">
+                  <button onClick={() => openCustomizer('Pistachio Stuffed Croissant', 'Croissant Fourré à la Pistache', 45, 'pastry')} className="w-full flex justify-between bg-transparent border-none p-0 text-left hover:text-[#B8734A] cursor-pointer"><span>Pistachio Croissant</span><span className="bg-[#FDFCF9] px-1.5 py-0.5 border border-[#D5CFC4] text-[0.65rem] rounded-[2px]">45 MAD</span></button>
+                  <button onClick={() => openCustomizer('Atlas Honey Almond Croissant', 'Croissant Amande au Miel de l’Atlas', 42, 'pastry')} className="w-full flex justify-between bg-transparent border-none p-0 text-left hover:text-[#B8734A] cursor-pointer"><span>Atlas Honey Almond Croissant</span><span className="bg-[#FDFCF9] px-1.5 py-0.5 border border-[#D5CFC4] text-[0.65rem] rounded-[2px]">42 MAD</span></button>
+                  <button onClick={() => openCustomizer('San Sebastián Honey Cake', 'Gâteau de Miel San Sebastián', 50, 'pastry')} className="w-full flex justify-between bg-transparent border-none p-0 text-left hover:text-[#B8734A] cursor-pointer"><span>San Sebastián Honey Cake</span><span className="bg-[#FDFCF9] px-1.5 py-0.5 border border-[#D5CFC4] text-[0.65rem] rounded-[2px]">50 MAD</span></button>
+                </div>
+              </div>
+
             </div>
           </aside>
 
@@ -193,7 +252,7 @@ export default function LuxuryVisualLoungeApp() {
                     ) : (
                       <div className="space-y-4 overflow-y-auto flex-1 text-left">
                         {messages.map((m, i) => (
-                          <div key={i} className={`flex flex-col ${m.role === 'user' ? 'items-end' : 'items-start'} animate-[fadeUp_0.2s_ease_both]`}>
+                          <div key={i} className={`flex flex-col ${m.role === 'user' ? 'items-end' : 'items-start'}`}>
                             <span className="text-[0.55rem] tracking-[0.1em] uppercase text-[#6B6460] mb-0.5">{m.role === 'user' ? (guestName || 'You') : 'Anis'}</span>
                             <div className={`max-w-[85%] text-xs p-3 rounded-[2px] ${m.role === 'user' ? 'bg-[#EDEBE3] border border-[#D5CFC4]' : 'bg-[#1A1714] text-[#F5F0E8]'}`}>{m.content}</div>
                           </div>
@@ -210,7 +269,7 @@ export default function LuxuryVisualLoungeApp() {
               )}
 
               {activeTab === 'spaces' && (
-                <div className="space-y-6 p-1 animate-[fadeUp_0.3s_ease_both]">
+                <div className="space-y-6 p-1">
                   <div>
                     <h3 className="font-['Cormorant_Garamond'] text-xl text-[#1A1714]">{lang === 'EN' ? 'Infrastructure & Workspace Bookings' : "Réservations d'Espaces & Postes de Travail"}</h3>
                     <p className="text-[0.7rem] text-[#6B6460] uppercase tracking-wider">{lang === 'EN' ? 'Select architectural resources.' : 'Sélectionnez vos ressources.'}</p>
@@ -275,7 +334,7 @@ export default function LuxuryVisualLoungeApp() {
             </div>
           </div>
 
-          {/* RIGHT SIDE ACCENTS CARD */}
+          {/* RIGHT SIDE ACENTS CARD */}
           <aside className="lg:col-span-1 bg-[#1A1714] text-[#F5F0E8] border border-[#1A1714] rounded-[2px] p-5 h-full flex flex-col justify-between">
             <div className="space-y-3">
               <span className="text-[0.55rem] tracking-[0.2em] text-[#C9A96E] uppercase block font-semibold">Active Sanctuary</span>
