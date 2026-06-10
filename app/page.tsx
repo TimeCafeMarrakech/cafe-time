@@ -3,13 +3,25 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Coffee, Award, Home, ShoppingBag, Plus, X, Send, Calendar, Sparkles, Megaphone, Heart, Smartphone, Fingerprint, Wallet, CheckCircle, Briefcase, Loader2, MessageSquare, BellRing, GlassWater, Coins } from 'lucide-react';
 import { supabase } from '@/app/supabaseClient';
 
+interface MenuItem {
+  id: number;
+  name: string;
+  desc: string;
+  price: number;
+  category: string;
+  img: string;
+}
+
+interface CartItem extends MenuItem {
+  cartId: number;
+}
+
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [activeTab, setActiveTab] = useState('home');
   const [activeCategory, setActiveCategory] = useState('All');
   const [reserveCategory, setReserveCategory] = useState('Workspace');
-  const [cart, setCart] = useState([]);
-  const [selectedItem, setSelectedItem] = useState(null);
+  const [cart, setCart] = useState<CartItem[]>([]);
   
   // Onboarding Wizard State Machine
   const [showOnboarding, setShowOnboarding] = useState(false);
@@ -21,7 +33,7 @@ export default function App() {
   const [signInPhone, setSignInPhone] = useState('');
   
   // Checkout & Interactive Modals
-  const [checkoutStep, setCheckoutStep] = useState(null); 
+  const [checkoutStep, setCheckoutStep] = useState<string | null>(null); 
   const [paymentMethod, setPaymentMethod] = useState('applepay'); 
   const [showScanner, setShowScanner] = useState(false);
   
@@ -29,25 +41,25 @@ export default function App() {
   const [applePayState, setApplePayState] = useState('idle'); 
 
   // TECH PILLAR 1: AUTONOMOUS PAGER STATES
-  const [tableNumber, setTableNumber] = useState('Table 04'); // Mock default assigned seat
-  const [pagerStatus, setPagerStatus] = useState('idle'); // idle -> transmitting -> active -> cleared
+  const [tableNumber] = useState('Table 04'); 
+  const [pagerStatus, setPagerStatus] = useState('idle'); 
   const [activeRequestType, setActiveRequestType] = useState('');
 
   // Rotating Dynamic States
   const [starProductIndex, setStarProductIndex] = useState(0);
-  const [favorites, setFavorites] = useState([1, 6]); 
+  const [favorites, setFavorites] = useState<number[]>([1, 6]); 
 
   // Real-time Loyalty Points Engine State
   const [userPoints, setUserPoints] = useState(750);
   const [guestName, setGuestName] = useState('Alex');
-  const [lang, setLang] = useState('en');
+  const [lang, setLang] = useState<'en' | 'fr'>('en');
 
-  // Customer Profile Photo State
-  const [customerPhoto, setCustomerPhoto] = useState('https://images.pexels.com/photos/733872/pexels-photo-733872.jpeg?auto=compress&cs=tinysrgb&w=150');
+  // Customer Profile Photo]
+  const [customerPhoto] = useState('https://images.pexels.com/photos/733872/pexels-photo-733872.jpeg?auto=compress&cs=tinysrgb&w=150');
   const [userHeadline, setUserHeadline] = useState('Creative Director');
 
   // Broadcast System States
-  const [broadcasts, setBroadcasts] = useState([]);
+  const [broadcasts, setBroadcasts] = useState<any[]>([]);
   const [showBroadcastModal, setShowBroadcastModal] = useState(false);
   const [broadcastMessage, setBroadcastMessage] = useState('');
   const [isPostingBroadcast, setIsPostingBroadcast] = useState(false);
@@ -60,7 +72,7 @@ export default function App() {
     { sender: 'bot', text: 'Marhaban. Welcome to the serenity of TIME. I am Anis, your cultural and application guide. How may I elevate your lovely evening here in Marrakech? 🍃☕' }
   ]);
 
-  const messagesEndRef = useRef(null);
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
 
   const t = {
     en: {
@@ -75,7 +87,7 @@ export default function App() {
     }
   };
 
-  const menuItems = [
+  const menuItems: MenuItem[] = [
     { id: 1, name: 'Cortado', desc: 'Equal parts rich house espresso and softly steamed milk.', price: 25, category: 'Coffee', img: 'https://images.pexels.com/photos/312418/pexels-photo-312418.jpeg?auto=compress&cs=tinysrgb&w=400' },
     { id: 2, name: 'Single Origin Pour Over', desc: 'Bright citrus notes and a floral finish.', price: 45, category: 'Coffee', img: 'https://images.pexels.com/photos/374885/pexels-photo-374885.jpeg?auto=compress&cs=tinysrgb&w=500' },
     { id: 3, name: 'Espresso (Takeaway)', desc: 'Signature house espresso inside an insulated TIME cup.', price: 20, category: 'Coffee', img: 'https://images.pexels.com/photos/312418/pexels-photo-312418.jpeg?auto=compress&cs=tinysrgb&w=400' },
@@ -168,7 +180,6 @@ export default function App() {
     }
   };
 
-  // TECH PILLAR 1: TRANSMIT AUTONOMOUS PAGER REQUEST TO SUPABASE
   const handleTriggerAutonomousPager = async (type: string) => {
     setActiveRequestType(type);
     setPagerStatus('transmitting');
@@ -185,7 +196,6 @@ export default function App() {
 
       if (error) throw error;
 
-      // Simulated tactile haptic confirmation speed step
       setTimeout(() => {
         setPagerStatus('active');
       }, 1200);
@@ -205,7 +215,7 @@ export default function App() {
   const filteredReserve = reserveItems.filter(item => item.category === reserveCategory);
   const cartTotal = cart.reduce((total, totalItem) => total + totalItem.price, 0);
 
-  const handleToggleFavorite = (id, e) => {
+  const handleToggleFavorite = (id: number, e: React.MouseEvent) => {
     e.stopPropagation(); 
     if (favorites.includes(id)) {
       setFavorites(favorites.filter(favId => favId !== id));
@@ -214,7 +224,7 @@ export default function App() {
     }
   };
 
-  const handleDirectAddToCart = (item) => {
+  const handleDirectAddToCart = (item: MenuItem) => {
     setCart([...cart, { 
       ...item, 
       cartId: Date.now() 
@@ -270,7 +280,7 @@ export default function App() {
     }, 4000);
   };
 
-  const handleClaimReward = async (reward) => {
+  const handleClaimReward = async (reward: { name: string; pointsCost: number }) => {
     if (userPoints >= reward.pointsCost) {
       const nextPointsValue = userPoints - reward.pointsCost;
       
@@ -293,11 +303,11 @@ export default function App() {
     }
   };
 
-  const handlePingMember = (name) => {
+  const handlePingMember = (name: string) => {
     alert(`Salutations sent! An elite digital connection pass has been transmitted securely to ${name}'s radar stream.`);
   };
 
-  const getTierLabel = (pts) => {
+  const getTierLabel = (pts: number) => {
     if (pts >= 5000) return 'Royal Elite Pass';
     if (pts >= 1500) return 'Majorelle Member';
     return 'Medina Guest';
@@ -314,7 +324,7 @@ export default function App() {
       if (error) throw error;
 
       if (data && data.length > 0) {
-        const reformattedMessages = data.map(msg => ({
+        const reformattedMessages = data.map((msg: any) => ({
           sender: msg.sender,
           text: msg.message_text
         }));
@@ -686,7 +696,7 @@ export default function App() {
                               No updates on the network layout. Be the first to drop an alert line!
                             </div>
                           ) : (
-                            broadcasts.map((b) => (
+                            broadcasts.map((b: any) => (
                               <div key={b.id} className="bg-white/[0.03] border border-white/5 p-3 rounded-xl space-y-1">
                                 <div className="flex justify-between items-baseline">
                                   <h5 className="text-white text-xs font-bold">{b.author_name}</h5>
@@ -741,7 +751,7 @@ export default function App() {
 
                         <div className="space-y-3">
                           <p className="text-[#1E1B18] text-[10px] font-bold tracking-widest uppercase opacity-60">Active Radar Network</p>
-                          {activeLoungeMembers.map(member => (
+                          {activeLoungeMembers.map((member: any) => (
                             <div key={member.id} className="bg-white p-4 rounded-[20px] border border-black/[0.04] shadow-sm flex items-center justify-between gap-4">
                               <div className="flex items-center gap-3 overflow-hidden">
                                 <img src={member.img} className="w-11 h-11 rounded-full object-cover border border-black/5 shrink-0" alt={member.name} />
@@ -780,7 +790,7 @@ export default function App() {
                       </div>
 
                       <div className="space-y-3.5">
-                        {filteredMenu.map(item => (
+                        {filteredMenu.map((item: MenuItem) => (
                           <div key={item.id} className="flex bg-white rounded-2xl p-3 border border-black/[0.04] shadow-[0_4px_16px_rgba(0,0,0,0.01)] relative group cursor-pointer transition-all hover:border-[#D4AF37]/30 hover:scale-[1.005]" onClick={() => handleDirectAddToCart(item)}>
                             <img src={item.img || "https://images.pexels.com/photos/2067396/pexels-photo-2067396.jpeg?auto=compress&cs=tinysrgb&w=150"} alt={item.name} className="w-20 h-20 rounded-xl object-cover shrink-0 shadow-inner" />
                             <div className="ml-4 flex flex-col justify-between flex-1 py-0.5">
@@ -811,7 +821,7 @@ export default function App() {
                         <button onClick={() => setReserveCategory('Experiences')} className={`flex-1 py-2.5 rounded-lg text-xs font-semibold transition-all ${reserveCategory === 'Experiences' ? 'bg-[#1E1B18] text-white shadow-sm' : 'text-[#8C827A]'}`}>Experiences</button>
                       </div>
                       <div className="space-y-4.5">
-                        {filteredReserve.map(item => (
+                        {filteredReserve.map((item: any) => (
                           <div key={item.id} className="bg-white rounded-[24px] overflow-hidden shadow-[0_6px_20px_rgba(0,0,0,0.02)] border border-black/[0.04] group cursor-pointer">
                             <div className="h-36 relative overflow-hidden">
                               <img src={item.img} alt={item.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-103" />
@@ -850,7 +860,7 @@ export default function App() {
                       <div className="space-y-3.5">
                         <p className="text-[#1E1B18] text-[10px] font-bold tracking-widest uppercase opacity-60">Available Redemptions</p>
                         <div className="space-y-3">
-                          {claimableRewards.map(reward => (
+                          {claimableRewards.map((reward: any) => (
                             <div key={reward.id} className="bg-white border border-black/[0.04] p-4 rounded-xl flex items-center justify-between shadow-sm">
                               <div>
                                 <p className="text-xs font-bold text-[#1E1B18]">{reward.name}</p>
@@ -909,7 +919,7 @@ export default function App() {
                       ) : cart.length === 0 ? <div className="text-center text-[#8C827A] py-10 opacity-60 font-medium">Your cart is empty.</div> : (
                         <>
                           <div className="space-y-2.5">
-                            {cart.map((item, i) => (
+                            {cart.map((item: CartItem, i: number) => (
                               <div key={i} className="flex justify-between items-center bg-white p-4 rounded-xl border border-black/[0.03] shadow-sm">
                                 <div>
                                   <p className="font-bold text-[#1E1B18] text-xs">{item.name}</p>
@@ -920,7 +930,6 @@ export default function App() {
                             ))}
                           </div>
                           
-                          {/* PRESTIGIOUS HIGH-CLASS TOGGLE SYSTEM (WHITE DESIGNS WITH CRISP EMBLEMS) */}
                           <div className="space-y-2.5 pt-1">
                             <p className="text-[#1E1B18] text-[10px] font-bold tracking-widest uppercase opacity-60">Payment Method</p>
                             <div className="flex bg-[#F2ECE4] rounded-2xl p-1.5 gap-1.5 border border-black/[0.04]">
@@ -940,7 +949,6 @@ export default function App() {
                     {cart.length > 0 && checkoutStep !== 'confirmed' && (
                       <div className="p-5 bg-white border-t border-black/[0.04]">
                         
-                        {/* THE PRESTIGIOUS SOLID WHITE APPLE PAY CONFIRMATION EMBLEM */}
                         {paymentMethod === 'applepay' ? (
                           <button onClick={handleInitiateOrderConfirmation} className="w-full bg-white text-black h-13 border border-black/10 rounded-xl flex items-center justify-center font-bold text-xs tracking-widest uppercase shadow-md hover:bg-neutral-50 transition-all active:scale-[0.99]">
                             <span className="flex items-center gap-1.5">
@@ -949,7 +957,6 @@ export default function App() {
                             </span>
                           </button>
                         ) : (
-                          /* THE PRESTIGIOUS SOLID WHITE BILLET CASH TRANSACTION BUTTON */
                           <button onClick={handleInitiateOrderConfirmation} className="w-full bg-white text-black h-13 border border-black/10 rounded-xl flex flex-col items-center justify-center font-bold text-xs tracking-widest uppercase shadow-md hover:bg-neutral-50 transition-all active:scale-[0.99]">
                             <span className="flex items-center gap-2">
                               <Coins size={14} />
