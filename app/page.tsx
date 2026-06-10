@@ -51,17 +51,17 @@ export default function EntryPage() {
     return (
       <>
         <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet" />
-        <main className="min-h-screen bg-[#F5F0E8] text-[#1A1714] font-['DM_Sans'] flex flex-col p-4 md:p-8 select-none">
+        <main className="min-h-screen bg-[#F5F0E8] text-[#1A1714] font-['DM_Sans'] flex flex-col p-4 md:p-8">
           
-          {/* Minimal Editorial Top Header */}
-          <header className="max-w-6xl w-full mx-auto flex justify-between items-center border-b border-[#D5CFC4] pb-4 mb-6">
+          {/* Centered Editorial Top Header */}
+          <header className="max-w-5xl w-full mx-auto flex justify-between items-center border-b border-[#D5CFC4] pb-4 mb-6">
             <div>
               <h1 className="font-['Cormorant_Garamond'] text-2xl tracking-[0.2em] uppercase text-[#B8734A]">T I M E</h1>
               <p className="text-[0.65rem] tracking-[0.1em] uppercase text-[#6B6460]">Marrakech · Workspace & AI Salon</p>
             </div>
             <button 
               onClick={() => setShowChat(false)}
-              className="text-[0.65rem] tracking-[0.15em] uppercase border border-[#D5CFC4] px-3 py-1.5 rounded-[2px] hover:border-[#1A1714] transition-colors"
+              className="text-[0.65rem] tracking-[0.15em] uppercase border border-[#D5CFC4] px-3 py-1.5 rounded-[2px] hover:border-[#1A1714] transition-colors bg-transparent"
             >
               ← Exit Lounge
             </button>
@@ -69,11 +69,11 @@ export default function EntryPage() {
 
           {/* Guest Name Initialization Banner */}
           {!guestName && (
-            <div className="max-w-2xl w-full mx-auto mb-6 bg-[#EDEBE3] p-6 rounded-[2px] border border-[#D5CFC4] text-center space-y-4 animate-[fadeUp_0.4s_ease_both]">
+            <div className="max-w-md w-full mx-auto mb-6 bg-[#EDEBE3] p-6 rounded-[2px] border border-[#D5CFC4] text-center space-y-4 animate-[fadeUp_0.4s_ease_both]">
               <p className="text-xs tracking-wide text-[#6B6460] uppercase font-medium">
                 Before we summon the concierge, how shall Anis address you?
               </p>
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-3 max-w-md mx-auto">
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full">
                 <input 
                   type="text" 
                   id="nameInput"
@@ -102,77 +102,79 @@ export default function EntryPage() {
             </div>
           )}
 
-          {/* Main Workspace Split Layout: Menu Sidebar (Left) | Chat Loop (Right) */}
-          <div className="flex-1 max-w-6xl w-full mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch overflow-hidden">
+          {/* Balanced Split Grid Container */}
+          <div className="flex-1 max-w-5xl w-full mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 items-start overflow-hidden pb-4">
             
-            {/* 📜 THE TIME CAFÉ MENU SIDEBAR PANEL */}
-            <aside className="lg:col-span-1 bg-[#EDEBE3] border border-[#D5CFC4] rounded-[2px] p-6 space-y-6 overflow-y-auto max-h-[40vh] lg:max-h-none animate-[fadeUp_0.5s_ease_both]">
+            {/* 📜 La Carte Sidebar Panel */}
+            <aside className="md:col-span-1 bg-[#EDEBE3] border border-[#D5CFC4] rounded-[2px] p-5 space-y-6 animate-[fadeUp_0.5s_ease_both] w-full">
               <div>
-                <h2 className="font-['Cormorant_Garamond'] text-lg tracking-wider text-[#B8734A] uppercase mb-1">La Carte</h2>
+                <h2 className="font-['Cormorant_Garamond'] text-base tracking-wider text-[#B8734A] uppercase mb-1">La Carte</h2>
                 <div className="w-6 h-[1px] bg-[#B8734A]" />
               </div>
 
-              {/* Coffee Section */}
-              <div className="space-y-3">
-                <h3 className="text-[0.65rem] tracking-[0.15em] uppercase text-[#8A9E8C] font-semibold">Specialty Coffee</h3>
-                <div className="space-y-2 text-xs">
-                  <div className="flex justify-between border-b border-[#D5CFC4]/50 pb-1">
-                    <span>Cortado</span> <span className="font-medium">25 MAD</span>
+              {/* Specialty Coffee */}
+              <div className="space-y-2">
+                <h3 className="text-[0.6rem] tracking-[0.15em] uppercase text-[#8A9E8C] font-semibold">Specialty Coffee</h3>
+                <div className="space-y-1.5 text-xs text-[#1A1714]">
+                  <div className="flex justify-between border-b border-[#D5CFC4]/40 pb-0.5">
+                    <span>Cortado</span> <span>25 MAD</span>
                   </div>
-                  <div className="flex justify-between border-b border-[#D5CFC4]/50 pb-1">
-                    <span>Single Origin Pour Over</span> <span className="font-medium">45 MAD</span>
+                  <div className="flex justify-between border-b border-[#D5CFC4]/40 pb-0.5">
+                    <span>Single Origin Pour Over</span> <span>45 MAD</span>
                   </div>
-                  <div className="flex justify-between border-b border-[#D5CFC4]/50 pb-1">
-                    <span>Rose & Cardamom Latte</span> <span className="font-medium">45 MAD</span>
+                  <div className="flex justify-between border-b border-[#D5CFC4]/40 pb-0.5">
+                    <span>Rose & Cardamom Latte</span> <span>45 MAD</span>
                   </div>
-                  <div className="flex justify-between border-b border-[#D5CFC4]/50 pb-1">
-                    <span>Iced Espresso Shakerato</span> <span className="font-medium">35 MAD</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Bakery Section */}
-              <div className="space-y-3">
-                <h3 className="text-[0.65rem] tracking-[0.15em] uppercase text-[#8A9E8C] font-semibold">Artisanal Bakery</h3>
-                <div className="space-y-2 text-xs">
-                  <div className="flex justify-between border-b border-[#D5CFC4]/50 pb-1">
-                    <span>Pistachio Stuffed Croissant</span> <span className="font-medium">45 MAD</span>
-                  </div>
-                  <div className="flex justify-between border-b border-[#D5CFC4]/50 pb-1">
-                    <span>Fudge Cocoa Brownie</span> <span className="font-medium">35 MAD</span>
-                  </div>
-                  <div className="flex justify-between border-b border-[#D5CFC4]/50 pb-1">
-                    <span>San Sebastián Honey Cake</span> <span className="font-medium">50 MAD</span>
+                  <div className="flex justify-between border-b border-[#D5CFC4]/40 pb-0.5">
+                    <span>Iced Espresso Shakerato</span> <span>35 MAD</span>
                   </div>
                 </div>
               </div>
 
-              {/* Workspaces Section */}
-              <div className="space-y-3">
-                <h3 className="text-[0.65rem] tracking-[0.15em] uppercase text-[#8A9E8C] font-semibold">Workspace Layouts</h3>
-                <div className="space-y-2 text-xs">
-                  <div className="flex justify-between border-b border-[#D5CFC4]/50 pb-1">
-                    <span>Quiet Focus Desk</span> <span className="font-medium">150 MAD / 4h</span>
+              {/* Artisanal Bakery */}
+              <div className="space-y-2">
+                <h3 className="text-[0.6rem] tracking-[0.15em] uppercase text-[#8A9E8C] font-semibold">Artisanal Bakery</h3>
+                <div className="space-y-1.5 text-xs text-[#1A1714]">
+                  <div className="flex justify-between border-b border-[#D5CFC4]/40 pb-0.5">
+                    <span>Pistachio Croissant</span> <span>45 MAD</span>
                   </div>
-                  <div className="flex justify-between border-b border-[#D5CFC4]/50 pb-1">
-                    <span>Private Meeting Room</span> <span className="font-medium">400 MAD / 2h</span>
+                  <div className="flex justify-between border-b border-[#D5CFC4]/40 pb-0.5">
+                    <span>Fudge Cocoa Brownie</span> <span>35 MAD</span>
+                  </div>
+                  <div className="flex justify-between border-b border-[#D5CFC4]/40 pb-0.5">
+                    <span>San Sebastián Cake</span> <span>50 MAD</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Workspace Packages */}
+              <div className="space-y-2">
+                <h3 className="text-[0.6rem] tracking-[0.15em] uppercase text-[#8A9E8C] font-semibold">Workspaces</h3>
+                <div className="space-y-1.5 text-xs text-[#1A1714]">
+                  <div className="flex justify-between border-b border-[#D5CFC4]/40 pb-0.5">
+                    <span>Quiet Focus Desk</span> <span>150 MAD / 4h</span>
+                  </div>
+                  <div className="flex justify-between border-b border-[#D5CFC4]/40 pb-0.5">
+                    <span>Private Meeting Room</span> <span>400 MAD / 2h</span>
                   </div>
                 </div>
               </div>
             </aside>
 
-            {/* 💬 THE ACTIVE CONVERSATION SALON */}
-            <div className="lg:col-span-2 flex flex-col bg-[#FDFCF9] border border-[#D5CFC4] rounded-[2px] p-6 overflow-hidden">
-              <div className="flex-1 overflow-y-auto space-y-6 pr-2 style-scrollbar">
+            {/* 💬 The Interactive Conversation Arena */}
+            <div className="md:col-span-2 flex flex-col bg-[#FDFCF9] border border-[#D5CFC4] rounded-[2px] p-5 h-[65vh] md:h-[70vh] w-full justify-between">
+              
+              {/* Message History Frame */}
+              <div className="flex-1 overflow-y-auto space-y-4 pr-1 style-scrollbar">
                 {messages.length === 0 ? (
-                  <div className="text-center py-24 space-y-3">
+                  <div className="text-center py-16 space-y-3">
                     <p className="font-['Cormorant_Garamond'] italic text-2xl text-[#6B6460]">"Salam Alaykum. Marhaban."</p>
-                    <p className="text-[0.7rem] tracking-[0.12em] uppercase text-[#8A9E8C]">Anis is listening quietly inside the courtyard room... ✨</p>
+                    <p className="text-[0.68rem] tracking-[0.12em] uppercase text-[#8A9E8C]">Anis is listening quietly inside the courtyard room... ✨</p>
                   </div>
                 ) : (
                   messages.map((m, idx) => (
-                    <div key={idx} className={`flex flex-col ${m.role === 'user' ? 'items-end' : 'items-start'} animate-[fadeUp_0.4s_ease_both]`}>
-                      <span className="text-[0.6rem] tracking-[0.1em] uppercase text-[#6B6460] mb-1">
+                    <div key={idx} className={`flex flex-col ${m.role === 'user' ? 'items-end' : 'items-start'} animate-[fadeUp_0.3s_ease_both]`}>
+                      <span className="text-[0.58rem] tracking-[0.1em] uppercase text-[#6B6460] mb-0.5 px-1">
                         {m.role === 'user' ? (guestName || 'You') : 'Anis'}
                       </span>
                       <div className={`max-w-[85%] text-sm leading-relaxed p-3 rounded-[2px] ${m.role === 'user' ? 'bg-[#EDEBE3] border border-[#D5CFC4] text-[#1A1714]' : 'bg-[#1A1714] text-[#F5F0E8]'}`}>
@@ -182,25 +184,25 @@ export default function EntryPage() {
                   ))
                 )}
                 {isLoading && (
-                  <p className="text-[0.65rem] tracking-[0.15em] uppercase text-[#8A9E8C] animate-pulse">Anis is pouring thoughts... 🍃</p>
+                  <p className="text-[0.65rem] tracking-[0.15em] uppercase text-[#8A9E8C] animate-pulse px-1">Anis is pouring thoughts... 🍃</p>
                 )}
               </div>
 
-              {/* Chat Input Bar */}
-              <form onSubmit={handleSendMessage} className="mt-4 border-t border-[#D5CFC4] pt-4">
+              {/* Chat Input Dock */}
+              <form onSubmit={handleSendMessage} className="mt-4 border-t border-[#D5CFC4] pt-3">
                 <div className="relative flex items-center">
                   <input
                     type="text"
                     value={inputMessage}
                     onChange={(e) => setInputMessage(e.target.value)}
-                    placeholder={guestName ? `Speak to Anis, ${guestName}...` : "Choose a name above or type here directly..."}
-                    className="w-full bg-transparent py-3 pl-2 pr-12 text-sm text-[#1A1714] border-b border-transparent outline-none transition-colors placeholder-[#B0A99E] focus:border-[#B8734A]"
+                    placeholder={guestName ? `Speak to Anis, ${guestName}...` : "Type a thought here directly..."}
+                    className="w-full bg-transparent py-2.5 pl-1 pr-12 text-sm text-[#1A1714] border-b border-transparent outline-none placeholder-[#B0A99E] focus:border-[#B8734A]"
                   />
                   <button 
                     type="submit"
-                    className="absolute right-2 p-2 text-xs tracking-widest text-[#B8734A] uppercase hover:text-[#1A1714] transition-colors"
+                    className="absolute right-1 p-2 text-xs tracking-widest text-[#B8734A] uppercase hover:text-[#1A1714] transition-colors font-medium"
                   >
-                    Send →
+                    Send
                   </button>
                 </div>
               </form>
