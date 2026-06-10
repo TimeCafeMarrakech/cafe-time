@@ -24,7 +24,7 @@ export default function LuxuryVisualLoungeApp() {
   const [password, setPassword] = useState('');
   const [lang, setLang] = useState<'EN' | 'FR'>('EN');
   const [showChat, setShowChat] = useState(false);
-  const [activeTab, setActiveTab] = useState<'chat' | 'spaces' | 'checkout' | 'board'>('spaces');
+  const [activeTab, setActiveTab] = useState<'chat' | 'spaces' | 'shop' | 'board' | 'checkout'>('spaces');
 
   // ─── CHAT CONVERSATION STATES ───
   const [messages, setMessages] = useState<{ role: string; content: string }[]>([]);
@@ -39,7 +39,7 @@ export default function LuxuryVisualLoungeApp() {
   const [loyaltyStamps, setLoyaltyStamps] = useState<number>(5);
   const maxStamps = 9;
 
-  // New states for the community marketplace posting
+  // Notice board inputs
   const [newPostTitle, setNewPostTitle] = useState('');
   const [newPostDesc, setNewPostDesc] = useState('');
   const [newPostTag, setNewPostTag] = useState('Service');
@@ -48,9 +48,9 @@ export default function LuxuryVisualLoungeApp() {
   const [customizerNameEN, setCustomizerNameEN] = useState('');
   const [customizerNameFR, setCustomizerNameFR] = useState('');
   const [customizerBasePrice, setCustomizerBasePrice] = useState(0);
-  const [customizerType, setCustomizerType] = useState<'drink' | 'space' | 'pastry' | 'experience'>('drink');
+  const [customizerType, setCustomizerType] = useState<'drink' | 'space' | 'pastry' | 'experience' | 'merch'>('drink');
 
-  // ─── COMMUNITY BULLETIN DATA STORAGE ───
+  // ─── COMMUNITY DATA STORAGE ───
   const [bulletins, setBulletins] = useState<BulletinItem[]>([
     {
       id: 'b1',
@@ -61,20 +61,10 @@ export default function LuxuryVisualLoungeApp() {
       descEN: 'Specialized in premium Next.js and design systems. Happy to meet over a pour-over in the courtyard salon.',
       descFR: 'Spécialisé en architectures Next.js premium. Ravi de vous rencontrer autour d&apos;un café filtre dans le salon.',
       author: 'Youssef El Alami'
-    },
-    {
-      id: 'b2',
-      tagEN: 'Crafts',
-      tagFR: 'Artisanat',
-      titleEN: 'Sourcing Handwoven Atlas Rugs',
-      titleFR: 'Sourcing de Tapis de l&apos;Atlas Tissés Main',
-      descEN: 'Exporting premium structural architectural rugs worldwide. Contact me for catalog or partnership options.',
-      descFR: 'Exportation de tapis architecturaux premium dans le monde entier. Contactez-moi pour voir le catalogue.',
-      author: 'Sarah Jenkins'
     }
   ]);
 
-  const openCustomizer = (nameEN: string, nameFR: string, price: number, type: 'drink' | 'space' | 'pastry' | 'experience') => {
+  const openCustomizer = (nameEN: string, nameFR: string, price: number, type: 'drink' | 'space' | 'pastry' | 'experience' | 'merch') => {
     setSelectedMilk('Standard');
     setCustomizerNameEN(nameEN);
     setCustomizerNameFR(nameFR);
@@ -88,11 +78,9 @@ export default function LuxuryVisualLoungeApp() {
     let details = [];
     const labelName = lang === 'EN' ? customizerNameEN : customizerNameFR;
 
-    if (customizerType === 'drink') {
-      if (selectedMilk !== 'Standard') { 
-        finalPrice += 6; 
-        details.push(selectedMilk === 'Oat Milk' ? (lang === 'EN' ? 'Oat Milk +6 MAD' : 'Lait d&apos;Avoine +6 MAD') : (lang === 'EN' ? 'Almond Milk +6 MAD' : 'Lait d&apos;Amande +6 MAD')); 
-      }
+    if (customizerType === 'drink' && selectedMilk !== 'Standard') { 
+      finalPrice += 6; 
+      details.push(selectedMilk === 'Oat Milk' ? (lang === 'EN' ? 'Oat Milk +6 MAD' : 'Lait d&apos;Avoine +6 MAD') : (lang === 'EN' ? 'Almond Milk +6 MAD' : 'Lait d&apos;Amande +6 MAD')); 
     }
 
     const detailString = details.length > 0 ? ` (${details.join(', ')})` : '';
@@ -104,7 +92,6 @@ export default function LuxuryVisualLoungeApp() {
   const handleCreatePost = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newPostTitle.trim() || !newPostDesc.trim()) return;
-
     const newPost: BulletinItem = {
       id: Math.random().toString(36).substring(2, 9),
       tagEN: newPostTag,
@@ -115,7 +102,6 @@ export default function LuxuryVisualLoungeApp() {
       descFR: newPostDesc,
       author: guestName || 'Anonymous Member'
     };
-
     setBulletins([newPost, ...bulletins]);
     setNewPostTitle('');
     setNewPostDesc('');
@@ -137,7 +123,6 @@ export default function LuxuryVisualLoungeApp() {
     } catch (error) { console.error(error); } finally { setIsLoading(false); }
   };
 
-  // ─── VIEW 1: ACTIVE LOUNGE (INSIDE HUB) ───
   if (showChat) {
     return (
       <main className="min-h-screen bg-[#F5F0E8] text-[#1A1714] font-['DM_Sans'] flex flex-col p-4 md:p-6 relative">
@@ -163,13 +148,12 @@ export default function LuxuryVisualLoungeApp() {
           </div>
         )}
 
-        {/* Top Navigation Bar with Inline Language Switcher */}
+        {/* Navigation Bar */}
         <header className="max-w-7xl w-full mx-auto flex justify-between items-center border-b border-[#D5CFC4] pb-4 mb-6">
           <div>
             <h1 className="font-['Cormorant_Garamond'] text-2xl tracking-[0.2em] uppercase text-[#B8734A] font-light">T I M E</h1>
             <p className="text-[0.65rem] tracking-[0.1em] uppercase text-[#6B6460]">{lang === 'EN' ? 'Marrakech · Workspace Hub & Specialty Bar' : 'Marrakech · Espace de Travail & Bar de Spécialité'}</p>
           </div>
-          
           <div className="flex items-center gap-4">
             <div className="text-xs uppercase tracking-widest font-medium border border-[#D5CFC4] rounded-[2px] p-1 flex gap-2 bg-[#EDEBE3]/50">
               <button onClick={() => setLang('EN')} className={`px-2 py-0.5 rounded-[1px] font-medium transition-colors ${lang === 'EN' ? 'bg-[#1A1714] text-[#F5F0E8]' : 'text-[#6B6460]'}`}>EN</button>
@@ -179,10 +163,10 @@ export default function LuxuryVisualLoungeApp() {
           </div>
         </header>
 
-        {/* Guest Name Banner */}
+        {/* Guest Banner */}
         {!guestName && (
           <div className="max-w-md w-full mx-auto mb-6 bg-[#EDEBE3] p-6 rounded-[2px] border border-[#D5CFC4] text-center space-y-4">
-            <p className="text-xs tracking-wide text-[#6B6460] uppercase font-medium">{lang === 'EN' ? "Before we summon the concierge, how shall Anis address you?" : "Avant d'appeler le concierge, comment Anis doit-il vous appeler ?"}</p>
+            <p className="text-xs tracking-wide text-[#6B6460] uppercase font-medium">{lang === 'EN' ? "Before we summon the concierge, how shall Anis address you?" : "Avant d'appeler le concierge, comment Anis doit-il vous appelér ?"}</p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full">
               <input type="text" id="nameInput" placeholder={lang === 'EN' ? "Enter your name..." : "Entrez votre nom..."} className="w-full sm:w-64 px-4 py-2 border border-[#D5CFC4] rounded-[2px] bg-[#FDFCF9] text-sm text-center outline-none focus:border-[#B8734A]" onKeyDown={(e) => { if (e.key === 'Enter') { const val = (e.target as HTMLInputElement).value; if (val.trim()) setGuestName(val.trim()); } }} />
               <button type="button" onClick={() => { const inputEl = document.getElementById('nameInput') as HTMLInputElement; if (inputEl && inputEl.value.trim()) setGuestName(inputEl.value.trim()); }} className="w-full sm:w-auto px-5 py-2 bg-[#1A1714] text-[#F5F0E8] text-xs tracking-widest uppercase rounded-[2px] hover:bg-[#2E2A26] transition-colors">{lang === 'EN' ? 'Confirm' : 'Confirmer'}</button>
@@ -190,12 +174,11 @@ export default function LuxuryVisualLoungeApp() {
           </div>
         )}
 
-        {/* THREE-COLUMN SYSTEM MATRIX */}
+        {/* CORE MATRIX GRID */}
         <div className="flex-1 max-w-7xl w-full mx-auto grid grid-cols-1 lg:grid-cols-4 gap-6 items-start overflow-hidden pb-4">
           
-          {/* DEEP TYPOGRAPHIC CAFE MENU SIDEBAR (WITHOUT PHOTOS) */}
+          {/* SIDEBAR CATALOG PANEL */}
           <aside className="lg:col-span-1 bg-[#EDEBE3] border border-[#D5CFC4] rounded-[2px] p-4 space-y-5 max-h-[52vh] lg:max-h-[82vh] overflow-y-auto style-scrollbar">
-            
             <div className="bg-[#1A1714] text-[#F5F0E8] p-4 rounded-[2px] border border-black space-y-2.5">
               <div className="flex justify-between items-center text-[0.6rem] uppercase tracking-widest">
                 <span className="text-[#C9A96E] font-medium">{lang === 'EN' ? 'Ritual Loop' : 'Rituel Boucle'}</span>
@@ -212,29 +195,14 @@ export default function LuxuryVisualLoungeApp() {
             </div>
 
             <div className="space-y-4">
-              {/* Category 1: Single Origin Filter */}
               <div className="space-y-2">
                 <h3 className="text-[0.58rem] tracking-[0.15em] uppercase text-[#8A9E8C] font-semibold border-b border-[#D5CFC4]/50 pb-0.5">{lang === 'EN' ? 'Slow Brew & Pour Overs' : 'Extractions Douces'}</h3>
                 <div className="space-y-2 text-xs">
-                  <button onClick={() => openCustomizer('Ethiopia Sidamo V60', 'V60 Éthiopie Sidamo', 45, 'drink')} className="w-full flex justify-between bg-transparent border-none p-0 text-left hover:text-[#B8734A] cursor-pointer">
-                    <div className="flex flex-col">
-                      <span>Ethiopia Sidamo V60</span>
-                      <span className="text-[0.6rem] text-[#6B6460] italic font-light">Notes: Jasmine, Crisp Citrus</span>
-                    </div>
-                    <span className="bg-[#FDFCF9] h-fit px-1.5 py-0.5 border border-[#D5CFC4] text-[0.65rem] rounded-[2px]">45 MAD</span>
-                  </button>
-
-                  <button onClick={() => openCustomizer('Colombia Geisha Chemex', 'Chemex Colombie Geisha', 55, 'drink')} className="w-full flex justify-between bg-transparent border-none p-0 text-left hover:text-[#B8734A] cursor-pointer">
-                    <div className="flex flex-col">
-                      <span>Colombia Geisha Chemex</span>
-                      <span className="text-[0.6rem] text-[#6B6460] italic font-light">Notes: Honey, Yellow Peach</span>
-                    </div>
-                    <span className="bg-[#FDFCF9] h-fit px-1.5 py-0.5 border border-[#D5CFC4] text-[0.65rem] rounded-[2px]">55 MAD</span>
-                  </button>
+                  <button onClick={() => openCustomizer('Ethiopia Sidamo V60', 'V60 Éthiopie Sidamo', 45, 'drink')} className="w-full flex justify-between bg-transparent border-none p-0 text-left hover:text-[#B8734A] cursor-pointer"><div className="flex flex-col"><span>Ethiopia Sidamo V60</span><span className="text-[0.6rem] text-[#6B6460] italic font-light">Jasmine, Crisp Citrus</span></div><span className="bg-[#FDFCF9] h-fit px-1.5 py-0.5 border border-[#D5CFC4] text-[0.65rem] rounded-[2px]">45 MAD</span></button>
+                  <button onClick={() => openCustomizer('Colombia Geisha Chemex', 'Chemex Colombie Geisha', 55, 'drink')} className="w-full flex justify-between bg-transparent border-none p-0 text-left hover:text-[#B8734A] cursor-pointer"><div className="flex flex-col"><span>Colombia Geisha Chemex</span><span className="text-[0.6rem] text-[#6B6460] italic font-light">Honey, Yellow Peach</span></div><span className="bg-[#FDFCF9] h-fit px-1.5 py-0.5 border border-[#D5CFC4] text-[0.65rem] rounded-[2px]">55 MAD</span></button>
                 </div>
               </div>
 
-              {/* Category 2: Espresso Frameworks */}
               <div className="space-y-2">
                 <h3 className="text-[0.58rem] tracking-[0.15em] uppercase text-[#8A9E8C] font-semibold border-b border-[#D5CFC4]/50 pb-0.5">{lang === 'EN' ? 'Espresso Foundations' : 'Bases Espresso'}</h3>
                 <div className="space-y-2 text-xs">
@@ -243,61 +211,29 @@ export default function LuxuryVisualLoungeApp() {
                   <button onClick={() => openCustomizer('Flat White', 'Flat White Standard', 35, 'drink')} className="w-full flex justify-between bg-transparent border-none p-0 text-left hover:text-[#B8734A] cursor-pointer"><span>Flat White</span><span className="bg-[#FDFCF9] px-1.5 py-0.5 border border-[#D5CFC4] text-[0.65rem] rounded-[2px]">35 MAD</span></button>
                 </div>
               </div>
-
-              {/* Category 3: Marrakech Craft Signatures */}
-              <div className="space-y-2">
-                <h3 className="text-[0.58rem] tracking-[0.15em] uppercase text-[#8A9E8C] font-semibold border-b border-[#D5CFC4]/50 pb-0.5">{lang === 'EN' ? 'Marrakech Craft Signatures' : 'Signatures Artisanales'}</h3>
-                <div className="space-y-2 text-xs">
-                  <button onClick={() => openCustomizer('Rose & Cardamom Latte', 'Latte à la Rose et Cardamome', 45, 'drink')} className="w-full flex justify-between bg-transparent border-none p-0 text-left hover:text-[#B8734A] cursor-pointer">
-                    <div className="flex flex-col">
-                      <span>Rose & Cardamom Latte</span>
-                      <span className="text-[0.6rem] text-[#6B6460] italic font-light">Organic rosewater infusion</span>
-                    </div>
-                    <span className="bg-[#FDFCF9] h-fit px-1.5 py-0.5 border border-[#D5CFC4] text-[0.65rem] rounded-[2px]">45 MAD</span>
-                  </button>
-
-                  <button onClick={() => openCustomizer('Orange Blossom Shakerato', 'Shakerato Fleur d’Oranger', 40, 'drink')} className="w-full flex justify-between bg-transparent border-none p-0 text-left hover:text-[#B8734A] cursor-pointer">
-                    <div className="flex flex-col">
-                      <span>Orange Blossom Shakerato</span>
-                      <span className="text-[0.6rem] text-[#6B6460] italic font-light">Chilled espresso, blossom mist</span>
-                    </div>
-                    <span className="bg-[#FDFCF9] h-fit px-1.5 py-0.5 border border-[#D5CFC4] text-[0.65rem] rounded-[2px]">40 MAD</span>
-                  </button>
-                </div>
-              </div>
-
-              {/* Category 4: Artisanal Bakery */}
-              <div className="space-y-2">
-                <h3 className="text-[0.58rem] tracking-[0.15em] uppercase text-[#8A9E8C] font-semibold border-b border-[#D5CFC4]/50 pb-0.5">{lang === 'EN' ? 'Artisanal Bakery' : 'Boulangerie Artisanale'}</h3>
-                <div className="space-y-2 text-xs">
-                  <button onClick={() => openCustomizer('Pistachio Stuffed Croissant', 'Croissant Fourré à la Pistache', 45, 'pastry')} className="w-full flex justify-between bg-transparent border-none p-0 text-left hover:text-[#B8734A] cursor-pointer"><span>Pistachio Croissant</span><span className="bg-[#FDFCF9] px-1.5 py-0.5 border border-[#D5CFC4] text-[0.65rem] rounded-[2px]">45 MAD</span></button>
-                  <button onClick={() => openCustomizer('Atlas Honey Almond Croissant', 'Croissant Amande au Miel de l’Atlas', 42, 'pastry')} className="w-full flex justify-between bg-transparent border-none p-0 text-left hover:text-[#B8734A] cursor-pointer"><span>Atlas Honey Almond Croissant</span><span className="bg-[#FDFCF9] px-1.5 py-0.5 border border-[#D5CFC4] text-[0.65rem] rounded-[2px]">42 MAD</span></button>
-                </div>
-              </div>
             </div>
           </aside>
 
-          {/* MAIN INTERACTIVE AREA FRAME */}
+          {/* MAIN INTERACTIVE CORE WINDOW */}
           <div className="lg:col-span-2 flex flex-col bg-[#FDFCF9] border border-[#D5CFC4] rounded-[2px] p-5 h-[72vh] lg:h-[82vh] justify-between">
             <div className="flex border-b border-[#D5CFC4] pb-2 mb-4 gap-6 text-xs uppercase tracking-widest font-medium overflow-x-auto whitespace-nowrap style-scrollbar">
               <button onClick={() => setActiveTab('spaces')} className={`pb-1 bg-transparent border-none cursor-pointer ${activeTab === 'spaces' ? 'border-b-2 border-[#B8734A] text-[#1A1714]' : 'text-[#B0A99E]'}`}>{lang === 'EN' ? 'Experiences & Spaces' : 'Expériences & Espaces'}</button>
+              <button onClick={() => setActiveTab('shop')} className={`pb-1 bg-transparent border-none cursor-pointer ${activeTab === 'shop' ? 'border-b-2 border-[#B8734A] text-[#1A1714]' : 'text-[#B0A99E]'}`}>{lang === 'EN' ? 'Shop Collection' : 'Boutique TIME'}</button>
               <button onClick={() => setActiveTab('chat')} className={`pb-1 bg-transparent border-none cursor-pointer ${activeTab === 'chat' ? 'border-b-2 border-[#B8734A] text-[#1A1714]' : 'text-[#B0A99E]'}`}>{lang === 'EN' ? 'Salon AI (Anis)' : 'Salon IA (Anis)'}</button>
               <button onClick={() => setActiveTab('board')} className={`pb-1 bg-transparent border-none cursor-pointer ${activeTab === 'board' ? 'border-b-2 border-[#B8734A] text-[#1A1714]' : 'text-[#B0A99E]'}`}>{lang === 'EN' ? 'Medina Board' : 'Tableau Médina'}</button>
-              <button onClick={() => setActiveTab('checkout')} className={`pb-1 bg-transparent border-none cursor-pointer relative ${activeTab === 'checkout' ? 'border-b-2 border-[#B8734A] text-[#1A1714]' : 'text-[#B0A99E]'}`}>{lang === 'EN' ? 'Checkout Statement' : 'Registre de Caisse'}</button>
+              <button onClick={() => setActiveTab('checkout')} className={`pb-1 bg-transparent border-none cursor-pointer relative ${activeTab === 'checkout' ? 'border-b-2 border-[#B8734A] text-[#1A1714]' : 'text-[#B0A99E]'}`}>{lang === 'EN' ? 'Checkout' : 'Caisse'}</button>
             </div>
 
             <div className="flex-1 overflow-y-auto pr-1 style-scrollbar text-left">
               
-              {/* TAB 1: EXPERIENCES & WORKSPACE PODS FOR TRAVELERS & NOMADS */}
+              {/* TAB 1: EXPERIENCES */}
               {activeTab === 'spaces' && (
                 <div className="space-y-6">
                   <div>
                     <h3 className="font-['Cormorant_Garamond'] text-xl text-[#1A1714] font-medium">{lang === 'EN' ? 'Courtyard Experiences & Infrastructure' : 'Expériences Courtyard & Infrastructures'}</h3>
                     <p className="text-[0.7rem] text-[#6B6460] uppercase tracking-wider">{lang === 'EN' ? 'Curated architectural setups and analog rituals for locals & Airbnb guests.' : 'Installations architecturales et rituels analogiques pour résidents et voyageurs.'}</p>
                   </div>
-
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {/* Experience 1 */}
                     <div className="border border-[#D5CFC4] p-4 bg-[#EDEBE3]/20 rounded-[1px] flex flex-col justify-between space-y-4">
                       <div>
                         <span className="text-[0.55rem] tracking-widest bg-[#C9A96E] text-[#1A1714] font-bold px-2 py-0.5 rounded-[1px] uppercase">Airbnb Ritual</span>
@@ -306,27 +242,56 @@ export default function LuxuryVisualLoungeApp() {
                       </div>
                       <div className="flex justify-between items-center pt-2 border-t border-[#D5CFC4]/40">
                         <span className="text-xs font-semibold">120 MAD</span>
-                        <button onClick={() => openCustomizer('Vinyl Records Sound Session', 'Session Écoute Vinyles Courtyard', 120, 'experience')} className="text-[0.6rem] uppercase tracking-widest bg-[#1A1714] text-[#F5F0E8] px-3 py-1.5 rounded-[1px] font-medium">{lang === 'EN' ? 'Reserve' : 'Réserver'}</button>
-                      </div>
-                    </div>
-
-                    {/* Experience 2 */}
-                    <div className="border border-[#D5CFC4] p-4 bg-[#EDEBE3]/20 rounded-[1px] flex flex-col justify-between space-y-4">
-                      <div>
-                        <span className="text-[0.55rem] tracking-widest bg-[#8A9E8C] text-[#F5F0E8] font-semibold px-2 py-0.5 rounded-[1px] uppercase">Workspace</span>
-                        <h4 className="text-sm font-medium mt-2">{lang === 'EN' ? 'Dedicated Hot Desk Block' : 'Poste de Travail Dédié'}</h4>
-                        <p className="text-[0.68rem] text-[#6B6460] font-light mt-1">High-speed symmetrical fiber grid, ergonomic desk layouts, and unmetered artisan mineral water parameters.</p>
-                      </div>
-                      <div className="flex justify-between items-center pt-2 border-t border-[#D5CFC4]/40">
-                        <span className="text-xs font-semibold">150 MAD</span>
-                        <button onClick={() => openCustomizer('Dedicated Hot Desk Space Reservation', 'Réservation de Poste Dédié', 150, 'space')} className="text-[0.6rem] uppercase tracking-widest bg-[#1A1714] text-[#F5F0E8] px-3 py-1.5 rounded-[1px] font-medium">{lang === 'EN' ? 'Select Desk' : 'Choisir'}</button>
+                        <button onClick={() => openCustomizer('Vinyl Records Sound Session', 'Session Écoute Vinyles Courtyard', 120, 'experience')} className="text-[0.6rem] uppercase tracking-widest bg-[#1A1714] text-[#F5F0E8] px-3 py-1.5 rounded-[1px] font-medium">Reserve</button>
                       </div>
                     </div>
                   </div>
                 </div>
               )}
 
-              {/* TAB 2: ANIS CONVERSATIONS */}
+              {/* 🛍 BRAND NEW TAB 2: CURATED TYPOGRAPHIC APPAREL & MERCHANDISE */}
+              {activeTab === 'shop' && (
+                <div className="space-y-6 animate-[fadeUp_0.3s_ease_both]">
+                  <div>
+                    <h3 className="font-['Cormorant_Garamond'] text-xl text-[#1A1714] font-medium">{lang === 'EN' ? 'The TIME Wardrobe & Accessories' : 'La Collection Objets TIME'}</h3>
+                    <p className="text-[0.7rem] text-[#6B6460] uppercase tracking-wider">{lang === 'EN' ? 'Minimal, heavy-weight architectural merchandise assets constructed for our regulars.' : 'Objets minimalistes et textiles premium conçus pour les habitués du salon.'}</p>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    {/* Merch Item 1 */}
+                    <div className="border border-[#D5CFC4] p-4 bg-[#EDEBE3]/10 flex flex-col justify-between space-y-4 rounded-[1px]">
+                      <div>
+                        <span className="text-[0.5rem] text-[#B8734A] uppercase tracking-widest font-mono">01 / Textile</span>
+                        <h4 className="text-xs font-semibold uppercase mt-1 tracking-wider">{lang === 'EN' ? 'Heavy Canvas Tote Bag' : 'Cabas en Toile Épaisse'}</h4>
+                        <p className="text-[0.65rem] text-[#6B6460] font-light mt-1">360g raw unbleached organic canvas featuring our signature minimal coordinate coordinates stamp.</p>
+                      </div>
+                      <button onClick={() => openCustomizer('Premium Heavy Canvas Tote Bag', 'Cabas en Toile Épaisse TIME', 160, 'merch')} className="w-full text-center py-2 bg-[#1A1714] text-[#F5F0E8] text-[0.6rem] tracking-widest uppercase font-medium rounded-[1px] border-none cursor-pointer hover:bg-[#B8734A] transition-colors">160 MAD</button>
+                    </div>
+
+                    {/* Merch Item 2 */}
+                    <div className="border border-[#D5CFC4] p-4 bg-[#EDEBE3]/10 flex flex-col justify-between space-y-4 rounded-[1px]">
+                      <div>
+                        <span className="text-[0.5rem] text-[#B8734A] uppercase tracking-widest font-mono">02 / Ceramic</span>
+                        <h4 className="text-xs font-semibold uppercase mt-1 tracking-wider">{lang === 'EN' ? 'Matte Stoneware Espresso Cup' : 'Tasse à Espresso en Grès'}</h4>
+                        <p className="text-[0.65rem] text-[#6B6460] font-light mt-1">Hand-thrown local clay with a rough matte exterior finish and custom sand-glazed interior basin.</p>
+                      </div>
+                      <button onClick={() => openCustomizer('Matte Stoneware Espresso Cup', 'Tasse à Espresso en Grès Minimaliste', 95, 'merch')} className="w-full text-center py-2 bg-[#1A1714] text-[#F5F0E8] text-[0.6rem] tracking-widest uppercase font-medium rounded-[1px] border-none cursor-pointer hover:bg-[#B8734A] transition-colors">95 MAD</button>
+                    </div>
+
+                    {/* Merch Item 3 */}
+                    <div className="border border-[#D5CFC4] p-4 bg-[#EDEBE3]/10 flex flex-col justify-between space-y-4 rounded-[1px]">
+                      <div>
+                        <span className="text-[0.5rem] text-[#B8734A] uppercase tracking-widest font-mono">03 / Utility</span>
+                        <h4 className="text-xs font-semibold uppercase mt-1 tracking-wider">{lang === 'EN' ? 'Engraved Brass Scoop Clip' : 'Pince-Cuillère en Laiton'}</h4>
+                        <p className="text-[0.65rem] text-[#6B6460] font-light mt-1">Solid heavy brass metric spoon tool that doubles as a tight security compression lock clip for coffee bags.</p>
+                      </div>
+                      <button onClick={() => openCustomizer('Engraved Brass Coffee Scoop Clip', 'Pince-Cuillère en Laiton Gravé', 75, 'merch')} className="w-full text-center py-2 bg-[#1A1714] text-[#F5F0E8] text-[0.6rem] tracking-widest uppercase font-medium rounded-[1px] border-none cursor-pointer hover:bg-[#B8734A] transition-colors">75 MAD</button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* TAB 3: CHAT */}
               {activeTab === 'chat' && (
                 <div className="space-y-4 h-full flex flex-col justify-between">
                   <div className="space-y-4 overflow-y-auto flex-1 max-h-[52vh] flex flex-col justify-center text-center">
@@ -356,48 +321,36 @@ export default function LuxuryVisualLoungeApp() {
                 </div>
               )}
 
-              {/* TAB 3: THE COMMUNITY CIRCLE MARKETPLACE */}
+              {/* TAB 4: MEDINA BOARD */}
               {activeTab === 'board' && (
                 <div className="space-y-6">
                   <div>
                     <h3 className="font-['Cormorant_Garamond'] text-xl text-[#1A1714] font-medium">{lang === 'EN' ? 'The Medina Circle Marketplace' : 'Le Tableau d&apos;Annonces de la Médina'}</h3>
                     <p className="text-[0.7rem] text-[#6B6460] uppercase tracking-wider">{lang === 'EN' ? 'An exclusive pinboard for our coffee shop community to market services or products.' : 'Un espace réservé à notre communauté pour proposer services ou artisanats.'}</p>
                   </div>
-
-                  {/* Active Pin Board List */}
                   <div className="space-y-3 max-h-[30vh] overflow-y-auto style-scrollbar">
                     {bulletins.map((b) => (
                       <div key={b.id} className="border border-[#D5CFC4] p-3.5 bg-[#EDEBE3]/30 rounded-[1px]">
-                        <div className="flex justify-between items-center mb-1.5">
-                          <span className="text-[0.55rem] tracking-widest bg-[#1A1714] text-[#F5F0E8] px-2 py-0.5 rounded-[1px] uppercase font-mono">{lang === 'EN' ? b.tagEN : b.tagFR}</span>
-                          <span className="text-[0.6rem] text-[#6B6460] font-medium">By: {b.author}</span>
-                        </div>
+                        <div className="flex justify-between items-center mb-1.5"><span className="text-[0.55rem] tracking-widest bg-[#1A1714] text-[#F5F0E8] px-2 py-0.5 rounded-[1px] uppercase font-mono">{lang === 'EN' ? b.tagEN : b.tagFR}</span><span className="text-[0.6rem] text-[#6B6460] font-medium">By: {b.author}</span></div>
                         <h4 className="text-xs font-semibold text-[#1A1714]">{lang === 'EN' ? b.titleEN : b.titleFR}</h4>
                         <p className="text-xs font-light text-[#6B6460] mt-1 leading-relaxed">{lang === 'EN' ? b.descEN : b.descFR}</p>
                       </div>
                     ))}
                   </div>
-
-                  {/* Add New Notice Form Pinboard Layer */}
                   <form onSubmit={handleCreatePost} className="border-t border-[#D5CFC4] pt-4 space-y-3">
-                    <span className="text-[0.55rem] uppercase tracking-[0.15em] text-[#B8734A] font-bold block">{lang === 'EN' ? 'Pin your advertisement' : 'Épingler votre annonce'}</span>
                     <div className="grid grid-cols-3 gap-3">
                       <input type="text" value={newPostTitle} onChange={(e) => setNewPostTitle(e.target.value)} placeholder={lang === 'EN' ? 'Title/Service name...' : 'Titre du service...'} className="col-span-2 px-3 py-1.5 border border-[#D5CFC4] text-xs bg-[#FDFCF9] outline-none" required />
-                      <select value={newPostTag} onChange={(e) => setNewPostTag(e.target.value)} className="px-2 py-1.5 border border-[#D5CFC4] text-xs bg-[#FDFCF9] outline-none">
-                        <option value="Service">Service</option>
-                        <option value="Product">Product / Craft</option>
-                        <option value="Collab">Collaboration</option>
-                      </select>
+                      <select value={newPostTag} onChange={(e) => setNewPostTag(e.target.value)} className="px-2 py-1.5 border border-[#D5CFC4] text-xs bg-[#FDFCF9] outline-none"><option value="Service">Service</option><option value="Product">Product</option></select>
                     </div>
                     <div className="flex gap-3">
-                      <input type="text" value={newPostDesc} onChange={(e) => setNewPostDesc(e.target.value)} placeholder={lang === 'EN' ? 'Describe what you are offering to the lounge...' : 'Décrivez votre offre aux membres...'} className="flex-1 px-3 py-1.5 border border-[#D5CFC4] text-xs bg-[#FDFCF9] outline-none" required />
-                      <button type="submit" className="bg-[#1A1714] text-[#F5F0E8] px-4 text-xs uppercase tracking-widest rounded-[1px] font-medium">{lang === 'EN' ? 'Post' : 'Publier'}</button>
+                      <input type="text" value={newPostDesc} onChange={(e) => setNewPostDesc(e.target.value)} placeholder="..." className="flex-1 px-3 py-1.5 border border-[#D5CFC4] text-xs bg-[#FDFCF9] outline-none" required />
+                      <button type="submit" className="bg-[#1A1714] text-[#F5F0E8] px-4 text-xs uppercase tracking-widest font-medium rounded-[1px]">Post</button>
                     </div>
                   </form>
                 </div>
               )}
 
-              {/* TAB 4: CHECKOUT REGISTER */}
+              {/* TAB 5: CHECKOUT STATEMENT */}
               {activeTab === 'checkout' && (
                 <div className="space-y-6 p-1">
                   <h3 className="font-['Cormorant_Garamond'] text-xl text-[#1A1714]">{lang === 'EN' ? 'Statement Invoice Consolidation' : 'Consolidation de la Facture'}</h3>
@@ -424,14 +377,6 @@ export default function LuxuryVisualLoungeApp() {
                         <button onClick={() => { setPaymentStatus('processing_cash'); setTimeout(() => { setPaymentStatus('success_cash'); setTimeout(() => { setCart([]); setPaymentStatus('idle'); }, 2000); }, 1000); }} className="w-full bg-[#8A9E8C] text-[#F5F0E8] text-xs py-3 rounded-[2px] border-none font-medium uppercase cursor-pointer">{lang === 'EN' ? 'Pay Cash at Counter' : 'Payer en Espèces'}</button>
                         <button onClick={() => { setPaymentStatus('processing_apple'); setTimeout(() => { setPaymentStatus('success_apple'); setTimeout(() => { setCart([]); setPaymentStatus('idle'); }, 2000); }, 1000); }} className="w-full bg-[#1A1714] text-[#F5F0E8] text-xs py-3 rounded-[2px] border-none font-medium uppercase cursor-pointer">{lang === 'EN' ? 'Apple Pay Secure' : 'Sécurisé Apple Pay'}</button>
                       </div>
-                      {paymentStatus !== 'idle' && (
-                        <div className="p-3 bg-[#EDEBE3] text-center text-xs uppercase text-[#1A1714] rounded-[2px]">
-                          {paymentStatus === 'processing_cash' && (lang === 'EN' ? 'Routing invoice statements to bar system...' : 'Transmission au système du bar...')}
-                          {paymentStatus === 'processing_apple' && (lang === 'EN' ? 'Authorizing TouchID/FaceID enclave...' : 'Autorisation des paramètres TouchID/FaceID...')}
-                          {paymentStatus === 'success_cash' && (lang === 'EN' ? '✓ Logged. Settle bill with cashier.' : '✓ Enregistré. Veuillez régler au comptoir.')}
-                          {paymentStatus === 'success_apple' && (lang === 'EN' ? '✓ Apple Pay Settled. Order sent.' : '✓ Règlement Réussi. Commande envoyée.')}
-                        </div>
-                      )}
                     </>
                   )}
                 </div>
@@ -460,14 +405,11 @@ export default function LuxuryVisualLoungeApp() {
   // ─── VIEW 2: SPLIT SCREEN INTERACTIVE ENTRY GATEWAY ───
   return (
     <main className="min-h-screen grid grid-cols-1 md:grid-cols-2 bg-[#F5F0E8] text-[#1A1714] font-['DM_Sans',_sans-serif] font-light antialiased relative">
-      
-      {/* Absolute Language Selector */}
       <div className="absolute top-4 right-4 z-50 text-xs uppercase tracking-widest font-medium border border-[#D5CFC4] rounded-[2px] p-1 flex gap-2 bg-[#F5F0E8] shadow-sm">
         <button onClick={() => setLang('EN')} className={`px-2 py-0.5 rounded-[1px] ${lang === 'EN' ? 'bg-[#1A1714] text-[#F5F0E8]' : 'text-[#6B6460]'}`}>EN</button>
         <button onClick={() => setLang('FR')} className={`px-2 py-0.5 rounded-[1px] ${lang === 'FR' ? 'bg-[#1A1714] text-[#F5F0E8]' : 'text-[#6B6460]'}`}>FR</button>
       </div>
 
-      {/* LEFT ATMOSPHERE PANEL */}
       <section className="relative bg-[#1A1714] overflow-hidden flex flex-col justify-end p-8 md:p-12 min-h-[45vh] md:min-h-screen group">
         <div className="absolute inset-0 z-0">
           <img src="https://images.unsplash.com/photo-1541167760496-1628856ab772?w=1000&auto=format&fit=crop&q=80" alt="Espresso Pour" className="w-full h-full object-cover opacity-20 grayscale" />
