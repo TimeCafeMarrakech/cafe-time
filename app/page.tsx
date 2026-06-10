@@ -7,8 +7,6 @@ export default function EntryPage() {
   const [password, setPassword] = useState('');
   
   // ─── THE ROUTING SWITCH ───
-  // false = show Claude's luxury entrance screen
-  // true = show your live AI Concierge Chat space
   const [showChat, setShowChat] = useState(false);
 
   // ─── CHAT INTERFACE STATES ───
@@ -20,7 +18,7 @@ export default function EntryPage() {
   const handleSignIn = (e: React.FormEvent) => {
     e.preventDefault();
     console.log('Authenticating member:', email);
-    setShowChat(true); // Automatically take them into the lounge on sign-in
+    setShowChat(true); 
   };
 
   const handleSendMessage = async (e: React.FormEvent) => {
@@ -52,7 +50,7 @@ export default function EntryPage() {
   if (showChat) {
     return (
       <>
-        <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght=0,300;0,400;1,300&family=DM+Sans:wght=300;400&display=swap" rel="stylesheet" />
         <main className="min-h-screen bg-[#F5F0E8] text-[#1A1714] font-['DM_Sans'] flex flex-col p-4 md:p-8 select-none">
           
           {/* Minimal Editorial Top Header */}
@@ -69,18 +67,38 @@ export default function EntryPage() {
             </button>
           </header>
 
-          {/* Guest Name Initialization Banner */}
+          {/* Guest Name Initialization Banner — FIXED with explicit button confirm trigger */}
           {!guestName && (
-            <div className="max-w-2xl w-full mx-auto mb-6 bg-[#EDEBE3] p-4 rounded-[2px] border border-[#D5CFC4] text-center space-y-2">
-              <p className="text-xs tracking-wide text-[#6B6460] uppercase">Before we summon the concierge, how shall Anis address you?</p>
-              <input 
-                type="text" 
-                placeholder="Enter your name..." 
-                className="px-3 py-1.5 border border-[#D5CFC4] rounded-[2px] bg-[#FDFCF9] text-xs text-center outline-none focus:border-[#B8734A]"
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') setGuestName((e.target as HTMLInputElement).value);
-                }}
-              />
+            <div className="max-w-2xl w-full mx-auto mb-6 bg-[#EDEBE3] p-6 rounded-[2px] border border-[#D5CFC4] text-center space-y-4 animate-[fadeUp_0.4s_ease_both]">
+              <p className="text-xs tracking-wide text-[#6B6460] uppercase font-medium">
+                Before we summon the concierge, how shall Anis address you?
+              </p>
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3 max-w-md mx-auto">
+                <input 
+                  type="text" 
+                  id="nameInput"
+                  placeholder="Enter your name..." 
+                  className="w-full sm:w-64 px-4 py-2 border border-[#D5CFC4] rounded-[2px] bg-[#FDFCF9] text-sm text-center outline-none transition-colors focus:border-[#B8734A]"
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      const val = (e.target as HTMLInputElement).value;
+                      if (val.trim()) setGuestName(val.trim());
+                    }
+                  }}
+                />
+                <button
+                  type="button"
+                  onClick={() => {
+                    const inputEl = document.getElementById('nameInput') as HTMLInputElement;
+                    if (inputEl && inputEl.value.trim()) {
+                      setGuestName(inputEl.value.trim());
+                    }
+                  }}
+                  className="w-full sm:w-auto px-5 py-2 bg-[#1A1714] text-[#F5F0E8] text-xs tracking-widest uppercase rounded-[2px] hover:bg-[#2E2A26] transition-colors"
+                >
+                  Confirm
+                </button>
+              </div>
             </div>
           )}
 
@@ -108,7 +126,7 @@ export default function EntryPage() {
             )}
           </div>
 
-          {/* Luxury Floating Input Field Line */}
+          {/* Input Field Line */}
           <form onSubmit={handleSendMessage} className="max-w-2xl w-full mx-auto mt-4 border-t border-[#D5CFC4] pt-4">
             <div className="relative flex items-center">
               <input
@@ -136,7 +154,7 @@ export default function EntryPage() {
     <>
       <link rel="preconnect" href="https://fonts.googleapis.com" />
       <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-      <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet" />
+      <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght=0,300;0,400;1,300;1,400&family=DM+Sans:wght=300;400&display=swap" rel="stylesheet" />
 
       <main className="min-h-screen grid grid-cols-1 md:grid-cols-2 bg-[#F5F0E8] text-[#1A1714] font-['DM_Sans',_sans-serif] font-light antialiased">
         <section className="relative bg-[#1A1714] overflow-hidden flex flex-col justify-end p-8 md:p-12 min-h-[40vh] md:min-h-screen group">
@@ -241,7 +259,6 @@ export default function EntryPage() {
               <div className="flex-1 h-[1px] bg-[#D5CFC4]" />
             </div>
 
-            {/* 🔗 FIXED: Clicking here now sets showChat to true, triggering the AI system! */}
             <button
               type="button"
               onClick={() => setShowChat(true)}
