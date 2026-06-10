@@ -24,11 +24,11 @@ export async function POST(req: Request) {
        - 🏺 or 🧱 for stonewares, clay mugs, or architectural vibes.
        - 📜 for history, bookings, and database confirmations.
        - 🕊️ or ✨ for premium greetings and hospitality.
-    5. Always address the guest respectfully as ${guestName}.`;
+    5. Always address the guest respectfully as ${guestName || 'Guest'}.`;
 
-    const contents = messages.map((m: any) => ({
+    const contents = (messages || []).map((m: any) => ({
       role: m.role === 'assistant' ? 'model' : 'user',
-      parts: [{ text: m.content }]
+      parts: [{ text: m.content || '' }]
     }));
 
     const apiPayload = {
@@ -55,14 +55,15 @@ export async function POST(req: Request) {
       }
     );
 
-    const data = await response.json();
+    const data: any = await response.json();
 
-    if (data.error) {
+    if (data?.error) {
       console.error("Google Server Error Log:", data.error);
-      return NextResponse.json({ reply: `Anis is taking a small pause. (Google Error: ${data.error.message}) ☕` });
+      return NextResponse.json({ reply: `Anis is taking a small pause. (Google Error: ${data.error.message || 'Unknown'}) ☕` });
     }
 
-    const assistantReply = data.candidates[0].content.parts[0].text;
+    // Fixed: Protected data extraction via Optional Chaining (?.) and fallbacks
+    const assistantReply = data?.candidates?.[0]?.content?.parts?.[0]?.text || "Forgive me, I could not trace that thought. Let us try again. ✨";
     return NextResponse.json({ reply: assistantReply });
 
   } catch (error: any) {
