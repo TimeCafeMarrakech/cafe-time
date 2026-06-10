@@ -212,7 +212,7 @@ export default function LuxuryVisualLoungeApp() {
                   </div>
                   <form onSubmit={handleSendMessage} className="border-t border-[#D5CFC4] pt-3 flex items-center relative">
                     <input type="text" value={inputMessage} onChange={(e) => setInputMessage(e.target.value)} placeholder={lang === 'EN' ? 'Inquire about coffee batches...' : 'Posez des questions sur les cafés...'} className="w-full bg-transparent py-2 outline-none text-xs border-b border-transparent focus:border-[#B8734A]" />
-                    <button type="submit" className="absolute right-1 text-xs uppercase text-[#B8734A] font-medium bg-transparent border-none cursor-pointer">{lang === 'EN' ? 'SEND' : 'ENVOYER'}</button>
+                    <button type="submit" className="absolute right-1 text-xs uppercase text-[#B8734A] font-medium bg-transparent border-none cursor-pointer">SEND</button>
                   </form>
                 </div>
               )}
@@ -283,7 +283,7 @@ export default function LuxuryVisualLoungeApp() {
             </div>
           </div>
 
-          {/* RIGHT ACCENT BAR */}
+          {/* RIGHT SIDE ACENTS CARD */}
           <aside className="lg:col-span-1 bg-[#1A1714] text-[#F5F0E8] border border-[#1A1714] rounded-[2px] p-5 h-full flex flex-col justify-between">
             <div className="space-y-3">
               <span className="text-[0.55rem] tracking-[0.2em] text-[#C9A96E] uppercase block font-semibold">Active Sanctuary</span>
@@ -301,7 +301,7 @@ export default function LuxuryVisualLoungeApp() {
     );
   }
 
-  // ─── VIEW 2: SIGN-IN PORTAL DOORWAY GATEWAY ───
+  // ─── VIEW 2: SPLIT SCREEN INTERACTIVE ENTRY GATEWAY ───
   return (
     <main className="min-h-screen grid grid-cols-1 md:grid-cols-2 bg-[#F5F0E8] text-[#1A1714] font-['DM_Sans',_sans-serif] font-light antialiased relative">
       
@@ -325,12 +325,14 @@ export default function LuxuryVisualLoungeApp() {
               {lang === 'EN' ? 'Active In Courtyard Lounge Right Now' : 'Actif dans le Salon Courtyard en ce moment'}
             </span>
             <div className="flex gap-3 flex-wrap">
-              {activeWallMembers.map((m) => (
-                <div key={m.id} className="relative flex flex-col items-center group/avatar">
-                  <img src={m.imgUrl} alt={m.name} className="w-10 h-10 rounded-full object-cover border border-[#C9A96E]/40 grayscale shadow-sm"/>
-                  <div className="absolute -top-7 bg-[#1A1714] text-[#F5F0E8] text-[0.55rem] px-1.5 py-0.5 rounded-[1px] border border-[#C9A96E]/30 opacity-0 group-hover/avatar:opacity-100 duration-200 whitespace-nowrap z-30">{m.name} · <span className="text-[#8A9E8C]">{lang === 'EN' ? m.statusEN : m.statusFR}</span></div>
-                </div>
-              ))}
+              <div className="relative flex flex-col items-center group/avatar">
+                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80" alt="Youssef" className="w-10 h-10 rounded-full object-cover border border-[#C9A96E]/40 grayscale shadow-sm"/>
+                <div className="absolute -top-7 bg-[#1A1714] text-[#F5F0E8] text-[0.55rem] px-1.5 py-0.5 rounded-[1px] border border-[#C9A96E]/30 opacity-0 group-hover/avatar:opacity-100 duration-200 whitespace-nowrap z-30">Youssef E. · <span className="text-[#8A9E8C]">{lang === 'EN' ? 'In Salon' : 'Au Salon'}</span></div>
+              </div>
+              <div className="relative flex flex-col items-center group/avatar">
+                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80" alt="Sarah" className="w-10 h-10 rounded-full object-cover border border-[#C9A96E]/40 grayscale shadow-sm"/>
+                <div className="absolute -top-7 bg-[#1A1714] text-[#F5F0E8] text-[0.55rem] px-1.5 py-0.5 rounded-[1px] border border-[#C9A96E]/30 opacity-0 group-hover/avatar:opacity-100 duration-200 whitespace-nowrap z-30">Sarah J. · <span className="text-[#8A9E8C]">{lang === 'EN' ? 'Focus Desk' : 'Bureau Focus'}</span></div>
+              </div>
             </div>
           </div>
 
@@ -373,7 +375,7 @@ export default function LuxuryVisualLoungeApp() {
           </form>
 
           <div className="flex items-center gap-4 text-[0.72rem] tracking-[0.1em] uppercase text-[#6B6460]"><div className="flex-1 h-[1px] bg-[#D5CFC4]" />or<div className="flex-1 h-[1px] bg-[#D5CFC4]" /></div>
-          <button type="button" onClick={() => setShowChat(true)} className="w-full py-3 px-4 bg-transparent border border-[#D5CFC4] rounded-[2px] text-[0.78rem] tracking-[0.12em] uppercase text-[#6B6460] transition-colors hover:border-[#1A1714] hover:text-[#1A1714]">{lang === 'EN' ? 'Continue as guest →' : 'Continuer en tant qu\'invité →'}</button>
+          <button type="button" onClick={() => setShowChat(true)} className="w-full py-3 px-4 bg-transparent border border-[#D5CFC4] rounded-[2px] text-[0.78rem] tracking-[0.12em] uppercase text-[#6B6460] transition-colors hover:border-[#1A1714] hover:text-[#1A1714]">{lang === 'EN' ? 'Continue as guest →' : "Continuer en tant qu'invité →"}</button>
         </div>
       </section>
     </main>
