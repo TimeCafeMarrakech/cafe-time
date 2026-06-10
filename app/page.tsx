@@ -49,10 +49,12 @@ export default function LuxuryVisualLoungeApp() {
     isOpen: false, itemNameEN: '', itemNameFR: '', basePrice: 0, type: 'drink'
   });
 
-  // ─── TRANSLATION DICTIONARY ───
+  // ─── TRANSLATION DICTIONARY (FIXED: Pure text strings to guarantee build success) ───
   const t = {
     EN: {
-      tagline: "A place where time slows down deliberately.",
+      taglineLine1: "A place where",
+      taglineLine2: "time slows down",
+      taglineLine3: "deliberately.",
       members: "Members",
       earlyAccess: "Early Access",
       subTitle: "Café · Marrakech · Guéliz",
@@ -110,7 +112,9 @@ export default function LuxuryVisualLoungeApp() {
       rewardClaimed: "✨ Ritual Reward Claimed! Show this screen to your barista for a complimentary Specialty Brew or Pastry. 🥐",
     },
     FR: {
-      tagline: "Un lieu où le temps ralentit délibérément.",
+      taglineLine1: "Un lieu où le",
+      taglineLine2: "temps ralentit",
+      taglineLine3: "délibérément.",
       members: "Membres",
       earlyAccess: "Accès Anticipé",
       subTitle: "Café · Marrakech · Guéliz",
@@ -224,7 +228,7 @@ export default function LuxuryVisualLoungeApp() {
     return (
       <main className="min-h-screen bg-[#F5F0E8] text-[#1A1714] font-['DM_Sans'] flex flex-col p-4 md:p-6 relative">
         
-        {/* Customizer Modal Modal */}
+        {/* Customizer Modal */}
         {customizer.isOpen && (
           <div className="fixed inset-0 bg-[#1A1714]/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
             <div className="bg-[#F5F0E8] border border-[#D5CFC4] max-w-sm w-full p-6 rounded-[2px] space-y-5 shadow-xl text-left">
@@ -249,7 +253,7 @@ export default function LuxuryVisualLoungeApp() {
         <header className="max-w-7xl w-full mx-auto flex justify-between items-center border-b border-[#D5CFC4] pb-4 mb-6">
           <div>
             <h1 className="font-['Cormorant_Garamond'] text-2xl tracking-[0.2em] uppercase text-[#B8734A] font-light">T I M E</h1>
-            <p className="text-[0.65rem] tracking-[0.1em] uppercase text-[#6B6460]">{t[lang].hubSub}</p>
+            <p className="text-[0.65rem] tracking-[0.1em] uppercase text-[#6B6460]">Marrakech · Workspace Hub & Specialty Bar</p>
           </div>
           
           <div className="flex items-center gap-4">
@@ -275,7 +279,7 @@ export default function LuxuryVisualLoungeApp() {
         {/* THREE-COLUMN SYSTEM MATRIX */}
         <div className="flex-1 max-w-7xl w-full mx-auto grid grid-cols-1 lg:grid-cols-4 gap-6 items-start overflow-hidden pb-4">
           
-          {/* CATALOG PANEL WITH HIGH-QUALITY COVER IMAGES */}
+          {/* SIDEBAR CATALOG PANEL */}
           <aside className="lg:col-span-1 bg-[#EDEBE3] border border-[#D5CFC4] rounded-[2px] p-4 space-y-6 max-h-[52vh] lg:max-h-[82vh] overflow-y-auto style-scrollbar">
             <div className="bg-[#1A1714] text-[#F5F0E8] p-4 rounded-[2px] border border-black space-y-2.5">
               <div className="flex justify-between items-center text-[0.6rem] uppercase tracking-widest">
@@ -293,7 +297,6 @@ export default function LuxuryVisualLoungeApp() {
             </div>
 
             <div className="space-y-5">
-              {/* Category A */}
               <div className="space-y-2">
                 <h3 className="text-[0.58rem] tracking-[0.15em] uppercase text-[#8A9E8C] font-semibold mb-2">{t[lang].slowBrew}</h3>
                 <div className="relative w-full h-24 rounded-[1px] overflow-hidden border border-[#D5CFC4]/80 mb-3">
@@ -306,7 +309,6 @@ export default function LuxuryVisualLoungeApp() {
                 </div>
               </div>
 
-              {/* Category B */}
               <div className="space-y-2">
                 <h3 className="text-[0.58rem] tracking-[0.15em] uppercase text-[#8A9E8C] font-semibold mb-2">{t[lang].espressoFrameworks}</h3>
                 <div className="relative w-full h-24 rounded-[1px] overflow-hidden border border-[#D5CFC4]/80 mb-3">
@@ -321,7 +323,7 @@ export default function LuxuryVisualLoungeApp() {
             </div>
           </aside>
 
-          {/* MAIN INTERACTIVE CORE BOARD */}
+          {/* MAIN CHAT / CONTENT INTERACTIVE CORE */}
           <div className="lg:col-span-2 flex flex-col bg-[#FDFCF9] border border-[#D5CFC4] rounded-[2px] p-5 h-[72vh] lg:h-[82vh] justify-between">
             <div className="flex border-b border-[#D5CFC4] pb-2 mb-4 gap-6 text-xs uppercase tracking-widest font-medium overflow-x-auto whitespace-nowrap style-scrollbar">
               <button onClick={() => setActiveTab('chat')} className={`pb-1 bg-transparent border-none cursor-pointer ${activeTab === 'chat' ? 'border-b-2 border-[#B8734A] text-[#1A1714]' : 'text-[#B0A99E]'}`}>{t[lang].salonAiTab}</button>
@@ -341,7 +343,7 @@ export default function LuxuryVisualLoungeApp() {
                     ) : (
                       <div className="space-y-4 overflow-y-auto flex-1 text-left">
                         {messages.map((m, i) => (
-                          <div key={i} className={`flex flex-col ${m.role === 'user' ? 'items-end' : 'items-start'} animate-[fadeUp_0.2s_ease_both]`}>
+                          <div key={i} className={`flex flex-col ${m.role === 'user' ? 'items-end' : 'items-start'}`}>
                             <span className="text-[0.55rem] tracking-[0.1em] uppercase text-[#6B6460] mb-0.5">{m.role === 'user' ? (guestName || 'You') : 'Anis'}</span>
                             <div className={`max-w-[85%] text-xs p-3 rounded-[2px] ${m.role === 'user' ? 'bg-[#EDEBE3] border border-[#D5CFC4]' : 'bg-[#1A1714] text-[#F5F0E8]'}`}>{m.content}</div>
                           </div>
@@ -352,13 +354,13 @@ export default function LuxuryVisualLoungeApp() {
                   </div>
                   <form onSubmit={handleSendMessage} className="border-t border-[#D5CFC4] pt-3 flex items-center relative">
                     <input type="text" value={inputMessage} onChange={(e) => setInputMessage(e.target.value)} placeholder={t[lang].chatPlaceholder} className="w-full bg-transparent py-2 outline-none text-xs border-b border-transparent focus:border-[#B8734A]" />
-                    <button type="submit" className="absolute right-1 text-xs uppercase text-[#B8734A] font-medium bg-transparent border-none cursor-pointer">{lang === 'EN' ? 'SEND' : 'ENVOYER'}</button>
+                    <button type="submit" className="absolute right-1 text-xs uppercase text-[#B8734A] font-medium bg-transparent border-none cursor-pointer">SEND</button>
                   </form>
                 </div>
               )}
 
               {activeTab === 'spaces' && (
-                <div className="space-y-6 p-1 animate-[fadeUp_0.3s_ease_both]">
+                <div className="space-y-6 p-1">
                   <div>
                     <h3 className="font-['Cormorant_Garamond'] text-xl text-[#1A1714]">{t[lang].spaceHeader}</h3>
                     <p className="text-[0.7rem] text-[#6B6460] uppercase tracking-wider">{t[lang].spaceSub}</p>
@@ -411,7 +413,7 @@ export default function LuxuryVisualLoungeApp() {
             </div>
           </div>
 
-          {/* RIGHT ACCENT BAR */}
+          {/* RIGHT SIDE ACENTS CARD */}
           <aside className="lg:col-span-1 bg-[#1A1714] text-[#F5F0E8] border border-[#1A1714] rounded-[2px] p-5 h-full flex flex-col justify-between">
             <div className="space-y-3">
               <span className="text-[0.55rem] tracking-[0.2em] text-[#C9A96E] uppercase block font-semibold">Active Sanctuary</span>
@@ -429,31 +431,31 @@ export default function LuxuryVisualLoungeApp() {
     );
   }
 
-  // ─── VIEW 2: RE-STRUCTURED LUXURY SIGN-IN SPLIT DOORWAY ───
+  // ─── VIEW 2: SPLIT SCREEN INTERACTIVE ENTRY GATEWAY ───
   return (
     <main className="min-h-screen grid grid-cols-1 md:grid-cols-2 bg-[#F5F0E8] text-[#1A1714] font-['DM_Sans',_sans-serif] font-light antialiased relative">
       
-      {/* Absolute Language Floating Header Core at Doorway */}
+      {/* Absolute Language Selector */}
       <div className="absolute top-4 right-4 z-50 text-xs uppercase tracking-widest font-medium border border-[#D5CFC4] rounded-[2px] p-1 flex gap-2 bg-[#F5F0E8] shadow-sm">
         <button onClick={() => setLang('EN')} className={`px-2 py-0.5 rounded-[1px] ${lang === 'EN' ? 'bg-[#1A1714] text-[#F5F0E8]' : 'text-[#6B6460]'}`}>EN</button>
         <button onClick={() => setLang('FR')} className={`px-2 py-0.5 rounded-[1px] ${lang === 'FR' ? 'bg-[#1A1714] text-[#F5F0E8]' : 'text-[#6B6460]'}`}>FR</button>
       </div>
 
-      {/* LEFT PORTAL ATMOSPHERE BRAND PANEL */}
+      {/* LEFT ATMOSPHERE PANEL */}
       <section className="relative bg-[#1A1714] overflow-hidden flex flex-col justify-end p-8 md:p-12 min-h-[45vh] md:min-h-screen group">
         <div className="absolute inset-0 z-0">
-          <img src="https://images.unsplash.com/photo-1541167760496-1628856ab772?w=1000&auto=format&fit=crop&q=80" alt="Espresso Pour" className="w-full h-full object-cover opacity-20 grayscale transition-transform duration-1000 group-hover:scale-105" />
+          <img src="https://images.unsplash.com/photo-1541167760496-1628856ab772?w=1000&auto=format&fit=crop&q=80" alt="Espresso Pour" className="w-full h-full object-cover opacity-20 grayscale" />
         </div>
         <div className="absolute inset-0 opacity-[0.05] pointer-events-none z-10" style={{ backgroundImage: `repeating-linear-gradient(45deg, #C9A96E 0, #C9A96E 1px, transparent 0, transparent 50%), repeating-linear-gradient(-45deg, #C9A96E 0, #C9A96E 1px, transparent 0, transparent 50%)`, backgroundSize: '32px 32px' }} />
         <div className="absolute inset-0 bg-gradient-to-t from-[#1A1714] via-[#1A1714]/75 to-transparent pointer-events-none z-10" />
         
-        <div className="relative z-20 space-y-6 animate-[fadeUp_0.9s_ease_both] w-full">
+        <div className="relative z-20 space-y-6 w-full">
           <div className="space-y-2.5">
             <span className="text-[0.55rem] tracking-[0.18em] uppercase text-[#8A9E8C] block font-semibold">{t[lang].activeNow}</span>
             <div className="flex gap-3 flex-wrap">
               {activeWallMembers.map((m) => (
                 <div key={m.id} className="relative flex flex-col items-center group/avatar">
-                  <img src={m.imgUrl} alt={m.name} className="w-10 h-10 rounded-full object-cover border border-[#C9A96E]/40 grayscale transition-all duration-300 group-hover/avatar:grayscale-0 shadow-sm"/>
+                  <img src={m.imgUrl} alt={m.name} className="w-10 h-10 rounded-full object-cover border border-[#C9A96E]/40 grayscale shadow-sm"/>
                   <div className="absolute -top-7 bg-[#1A1714] text-[#F5F0E8] text-[0.55rem] px-1.5 py-0.5 rounded-[1px] border border-[#C9A96E]/30 opacity-0 group-hover/avatar:opacity-100 duration-200 whitespace-nowrap z-30">{m.name} · <span className="text-[#8A9E8C]">{lang === 'EN' ? m.statusEN : m.statusFR}</span></div>
                 </div>
               ))}
@@ -461,7 +463,11 @@ export default function LuxuryVisualLoungeApp() {
           </div>
 
           <div className="w-10 h-[1px] bg-[#C9A96E] mt-4" />
-          <p className="font-['Cormorant_Garamond'] italic font-light text-4xl md:text-5xl lg:text-6xl text-[#F5F0E8] leading-[1.15] tracking-tight">{t[lang].tagline}</p>
+          <p className="font-['Cormorant_Garamond'] italic font-light text-4xl md:text-5xl lg:text-6xl text-[#F5F0E8] leading-[1.15] tracking-tight">
+            {t[lang].taglineLine1}<br />
+            <span className="not-italic text-[#C9A96E]">{lang === 'EN' ? 'time' : 'temps'}</span> {t[lang].taglineLine2}<br />
+            {t[lang].taglineLine3}
+          </p>
           <div>
             <p className="text-[0.78rem] tracking-[0.18em] uppercase text-[#8A9E8C] mb-1.5">{t[lang].subTitle}</p>
             <p className="text-[0.75rem] tracking-[0.08em] uppercase text-[#F5F0E8]/40">{t[lang].detail}</p>
@@ -469,9 +475,9 @@ export default function LuxuryVisualLoungeApp() {
         </div>
       </section>
 
-      {/* RIGHT CREDENTIAL ACCOUNT COMPONENT BOX */}
+      {/* RIGHT ACC CREDENTIAL PANEL */}
       <section className="flex flex-col justify-center px-6 py-12 md:p-16 lg:p-24 bg-[#F5F0E8]">
-        <div className="max-w-md w-full mx-auto space-y-8 animate-[fadeUp_0.9s_ease_both]">
+        <div className="max-w-md w-full mx-auto space-y-8">
           <div className="font-['Cormorant_Garamond',_serif] text-base font-normal tracking-[0.32em] uppercase text-[#B8734A] flex items-center gap-3"><div className="w-6 h-[1px] bg-[#B8734A]" />TIME</div>
           
           <div>
