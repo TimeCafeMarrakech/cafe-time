@@ -103,19 +103,26 @@ export default function LuxuryVisualLoungeApp() {
           </div>
         )}
 
-        {/* Top Navigation Bar with Inline Language Switcher */}
-        <header className="max-w-7xl w-full mx-auto flex justify-between items-center border-b border-[#D5CFC4] pb-4 mb-6">
-          <div>
+        {/* 📱 REFINED ADAPTIVE MOBILE-SAFE NAV HEADER */}
+        <header className="max-w-7xl w-full mx-auto border-b border-[#D5CFC4] pb-4 mb-6 flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-center">
+          {/* Brand Left Stack */}
+          <div className="space-y-0.5 max-w-[60%] sm:max-w-none">
             <h1 className="font-['Cormorant_Garamond'] text-2xl tracking-[0.2em] uppercase text-[#B8734A] font-light">T I M E</h1>
-            <p className="text-[0.65rem] tracking-[0.1em] uppercase text-[#6B6460]">{lang === 'EN' ? 'Marrakech · Workspace Hub & Specialty Bar' : 'Marrakech · Espace de Travail & Bar de Spécialité'}</p>
+            <p className="text-[0.65rem] tracking-[0.1em] uppercase text-[#6B6460] break-words leading-tight pr-2 sm:pr-0">
+              {lang === 'EN' ? 'Marrakech · Workspace Hub & Specialty Bar' : 'Marrakech · Espace de Travail & Bar de Spécialité'}
+            </p>
           </div>
           
-          <div className="flex items-center gap-4">
+          {/* Action Right Container (Pushed cleanly into its own section layout on smaller wide viewport margins) */}
+          <div className="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto mt-1 sm:mt-0 pt-2 sm:pt-0 border-t border-[#D5CFC4]/30 sm:border-none">
+            {/* Toggle group */}
             <div className="text-xs uppercase tracking-widest font-medium border border-[#D5CFC4] rounded-[2px] p-1 flex gap-2 bg-[#EDEBE3]/50">
               <button onClick={() => setLang('EN')} className={`px-2 py-0.5 rounded-[1px] font-medium transition-colors ${lang === 'EN' ? 'bg-[#1A1714] text-[#F5F0E8]' : 'text-[#6B6460]'}`}>EN</button>
               <button onClick={() => setLang('FR')} className={`px-2 py-0.5 rounded-[1px] font-medium transition-colors ${lang === 'FR' ? 'bg-[#1A1714] text-[#F5F0E8]' : 'text-[#6B6460]'}`}>FR</button>
             </div>
-            <button onClick={() => setShowChat(false)} className="text-[0.65rem] tracking-[0.15em] uppercase border border-[#D5CFC4] px-3 py-1.5 rounded-[2px] bg-transparent cursor-pointer hover:border-[#1A1714]">{lang === 'EN' ? '← Exit Lounge' : '← Quitter le Salon'}</button>
+            <button onClick={() => setShowChat(false)} className="text-[0.65rem] tracking-[0.15em] uppercase border border-[#D5CFC4] px-2.5 py-1.5 rounded-[2px] bg-transparent cursor-pointer hover:border-[#1A1714] transition-colors shrink-0">
+              {lang === 'EN' ? '← Exit Lounge' : '← Quitter le Salon'}
+            </button>
           </div>
         </header>
 
@@ -133,7 +140,7 @@ export default function LuxuryVisualLoungeApp() {
         {/* THREE-COLUMN SYSTEM MATRIX */}
         <div className="flex-1 max-w-7xl w-full mx-auto grid grid-cols-1 lg:grid-cols-4 gap-6 items-start overflow-hidden pb-4">
           
-          {/* SIDEBAR CATALOG PANEL WITH LIFESTYLE IMAGES */}
+          {/* SIDEBAR CATALOG PANEL */}
           <aside className="lg:col-span-1 bg-[#EDEBE3] border border-[#D5CFC4] rounded-[2px] p-4 space-y-6 max-h-[52vh] lg:max-h-[82vh] overflow-y-auto style-scrollbar">
             <div className="bg-[#1A1714] text-[#F5F0E8] p-4 rounded-[2px] border border-black space-y-2.5">
               <div className="flex justify-between items-center text-[0.6rem] uppercase tracking-widest">
@@ -151,7 +158,6 @@ export default function LuxuryVisualLoungeApp() {
             </div>
 
             <div className="space-y-5">
-              {/* Category A */}
               <div className="space-y-2">
                 <h3 className="text-[0.58rem] tracking-[0.15em] uppercase text-[#8A9E8C] font-semibold mb-2">{lang === 'EN' ? 'Slow Brew & Pour Overs' : 'Extractions Douces'}</h3>
                 <div className="relative w-full h-24 rounded-[1px] overflow-hidden border border-[#D5CFC4]/80 mb-3">
@@ -164,7 +170,6 @@ export default function LuxuryVisualLoungeApp() {
                 </div>
               </div>
 
-              {/* Category B */}
               <div className="space-y-2">
                 <h3 className="text-[0.58rem] tracking-[0.15em] uppercase text-[#8A9E8C] font-semibold mb-2">{lang === 'EN' ? 'Espresso Frameworks' : 'Bases Espresso'}</h3>
                 <div className="relative w-full h-24 rounded-[1px] overflow-hidden border border-[#D5CFC4]/80 mb-3">
